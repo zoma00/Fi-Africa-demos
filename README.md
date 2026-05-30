@@ -7,5 +7,9 @@ https://zoma00.github.io/Fi-Africa-demos/
 
 ## Demos
 
-- Product Similarity: https://zoma00.github.io/Fi-Africa-demos/demos/product_similarity/static_demo/
-- Calories Zone: https://zoma00.github.io/Fi-Africa-demos/demos/calories_zone_app/preview/
+- Product Similarity
+  - Demo: https://zoma00.github.io/Fi-Africa-demos/demos/product_similarity/static_demo/
+  - README: [demos/product_similarity/README.md](demos/product_similarity/README.md)
+- Calories Zone
+  - Demo: https://zoma00.github.io/Fi-Africa-demos/demos/calories_zone_app/preview/
+  - README: [demos/calories_zone_app/README.md](demos/calories_zone_app/README.md)
