@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/food_retail.jpg" alt="Fi Africa grocery retail demo header" width="100%">
+</p>
+
 # Fi Africa Demos
 
 Static demo landing page for the Fi Africa event.
