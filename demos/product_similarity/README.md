@@ -17,19 +17,11 @@ Dynamic Similarity Thresholds: Adjustable similarity confidence levels (0.0-1.0)
 Improved UI Navigation: Clean tabbed interface with dedicated sections
 Smart Duplicate Prevention: Warns about existing similar products before adding
 Enhanced Database Viewer: Fixed vector compatibility issues with pgvector
-🏗️ Architecture
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   Streamlit     │    │   PostgreSQL     │    │   OpenAI CLIP   │
-│   Frontend      │◄──►│   + pgvector     │    │   Embeddings    │
-│                 │    │   Database       │    │                 │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-        │                        │                        │
-        │                        │                        │
-        ▼                        ▼                        ▼
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   Docker        │    │   Vector Search  │    │   Image         │
-│   Containers    │    │   & Indexing     │    │   Processing    │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
+## Architecture
+
+<img src="./docs/architecture.svg" alt="Product similarity architecture diagram" width="100%">
+
+The application runs as a Streamlit interface backed by PostgreSQL with pgvector. Product images are processed into OpenAI CLIP embeddings, stored in the vector database, and queried through configurable similarity search.
 🛠️ Technology Stack
 Frontend: Streamlit (Python web framework)
 Database: PostgreSQL 15 with pgvector extension

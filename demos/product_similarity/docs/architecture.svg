@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="540" viewBox="0 0 1200 540" role="img" aria-labelledby="title desc">
+  <title id="title">Product Similarity Architecture</title>
+  <desc id="desc">Architecture diagram showing Streamlit, PostgreSQL with pgvector, OpenAI CLIP embeddings, Docker containers, vector search, and image processing.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#0f766e"/>
+    </marker>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#f6fbfa"/>
+      <stop offset="100%" stop-color="#eef4f8"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#10202f" flood-opacity="0.14"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="540" rx="22" fill="url(#bg)"/>
+  <text x="64" y="62" fill="#18212f" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="30" font-weight="800">Product Similarity Architecture</text>
+  <text x="64" y="94" fill="#647084" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="17">Image embeddings flow from upload/search to vector storage and similarity results.</text>
+
+  <g font-family="Inter, Segoe UI, Arial, sans-serif">
+    <g filter="url(#shadow)">
+      <rect x="64" y="142" width="290" height="138" rx="14" fill="#ffffff" stroke="#cbdce2"/>
+      <text x="94" y="188" fill="#18212f" font-size="24" font-weight="800">Streamlit Frontend</text>
+      <text x="94" y="222" fill="#647084" font-size="17">Search, upload, results,</text>
+      <text x="94" y="248" fill="#647084" font-size="17">and dashboard views</text>
+    </g>
+
+    <g filter="url(#shadow)">
+      <rect x="455" y="142" width="290" height="138" rx="14" fill="#ffffff" stroke="#cbdce2"/>
+      <text x="485" y="188" fill="#18212f" font-size="24" font-weight="800">PostgreSQL</text>
+      <text x="485" y="222" fill="#647084" font-size="17">pgvector database for</text>
+      <text x="485" y="248" fill="#647084" font-size="17">products and embeddings</text>
+    </g>
+
+    <g filter="url(#shadow)">
+      <rect x="846" y="142" width="290" height="138" rx="14" fill="#ffffff" stroke="#cbdce2"/>
+      <text x="876" y="188" fill="#18212f" font-size="24" font-weight="800">OpenAI CLIP</text>
+      <text x="876" y="222" fill="#647084" font-size="17">Image embeddings for</text>
+      <text x="876" y="248" fill="#647084" font-size="17">visual similarity matching</text>
+    </g>
+
+    <g filter="url(#shadow)">
+      <rect x="64" y="352" width="290" height="112" rx="14" fill="#f7fffd" stroke="#a7d8d1"/>
+      <text x="94" y="400" fill="#134e48" font-size="22" font-weight="800">Docker Containers</text>
+      <text x="94" y="432" fill="#647084" font-size="16">App and database services</text>
+    </g>
+
+    <g filter="url(#shadow)">
+      <rect x="455" y="352" width="290" height="112" rx="14" fill="#f7fffd" stroke="#a7d8d1"/>
+      <text x="485" y="400" fill="#134e48" font-size="22" font-weight="800">Vector Search</text>
+      <text x="485" y="432" fill="#647084" font-size="16">Cosine, L2, and inner product</text>
+    </g>
+
+    <g filter="url(#shadow)">
+      <rect x="846" y="352" width="290" height="112" rx="14" fill="#f7fffd" stroke="#a7d8d1"/>
+      <text x="876" y="400" fill="#134e48" font-size="22" font-weight="800">Image Processing</text>
+      <text x="876" y="432" fill="#647084" font-size="16">Validation and preprocessing</text>
+    </g>
+  </g>
+
+  <path d="M 356 211 H 448" stroke="#0f766e" stroke-width="4" fill="none" marker-end="url(#arrow)"/>
+  <path d="M 453 226 H 361" stroke="#0f766e" stroke-width="4" fill="none" marker-end="url(#arrow)"/>
+  <path d="M 747 211 H 839" stroke="#0f766e" stroke-width="4" fill="none" marker-end="url(#arrow)"/>
+  <path d="M 600 282 V 344" stroke="#0f766e" stroke-width="4" fill="none" marker-end="url(#arrow)"/>
+  <path d="M 209 282 V 344" stroke="#0f766e" stroke-width="4" fill="none" marker-end="url(#arrow)"/>
+  <path d="M 991 282 V 344" stroke="#0f766e" stroke-width="4" fill="none" marker-end="url(#arrow)"/>
+</svg>
