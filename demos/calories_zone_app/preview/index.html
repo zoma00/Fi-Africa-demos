@@ -295,6 +295,14 @@
             gap: 12px;
         }
 
+        .meal-form {
+            grid-template-columns: minmax(0, 2fr) minmax(120px, 1fr);
+        }
+
+        .meal-unit-field {
+            grid-column: 1 / -1;
+        }
+
         .meal-list {
             display: grid;
             gap: 10px;
@@ -386,6 +394,7 @@
 
             .form-grid,
             .profile-form,
+            .meal-form,
             .meal-grid,
             .stats,
             .actions,
@@ -397,7 +406,8 @@
             .profile-name-field,
             .profile-age-field,
             .profile-half-field,
-            .profile-full-field {
+            .profile-full-field,
+            .meal-unit-field {
                 grid-column: 1 / -1;
             }
 
@@ -610,7 +620,7 @@
             <section class="card span-12">
                 <h2>Meal log</h2>
                 <p class="subtle">Enter meal entry name and amount in grams, ml, or pounds. Nutrition is auto-calculated as you type.</p>
-                <div class="form-grid">
+                <div class="form-grid meal-form">
                     <div>
                         <label for="mealName">Meal entry name</label>
                         <input id="mealName" type="text" placeholder="Chicken rice bowl">
@@ -619,7 +629,7 @@
                         <label for="mealAmount">Meal entry amount</label>
                         <input id="mealAmount" type="number" min="0" step="0.1" placeholder="250">
                     </div>
-                    <div class="span-12">
+                    <div class="meal-unit-field">
                         <label for="mealUnit">Entry unit</label>
                         <select id="mealUnit">
                             <option value="g" selected>Grams (g)</option>
