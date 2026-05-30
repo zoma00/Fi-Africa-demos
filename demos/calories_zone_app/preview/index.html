@@ -1,0 +1,1836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calories Zone Preview</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --bg: #f7f4ed;
+            --surface: #fffaf2;
+            --card: #ffffff;
+            --line: #ddd4c6;
+            --text: #1f1d19;
+            --muted: #635f57;
+            --primary: #0f766e;
+            --primary-soft: #a4f4e8;
+            --secondary: #b45309;
+            --secondary-soft: #ffddba;
+            --danger: #b42318;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", system-ui, sans-serif;
+            background: radial-gradient(circle at top left, #fffefb 0%, var(--bg) 65%);
+            color: var(--text);
+        }
+
+        .page {
+            max-width: 1040px;
+            margin: 0 auto;
+            padding: 24px 16px 48px;
+        }
+
+        .hero,
+        .card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            box-shadow: 0 12px 32px rgba(23, 20, 12, 0.08);
+        }
+
+        .hero {
+            margin-bottom: 18px;
+            overflow: hidden;
+        }
+
+        .hero-inner {
+            background: linear-gradient(135deg, var(--primary-soft), #d5fbf4 58%, #f2fffd 100%);
+            padding: 26px;
+        }
+
+        .hero h1 {
+            margin: 0 0 10px;
+            font-size: clamp(1.8rem, 3vw, 2.8rem);
+        }
+
+        .hero p {
+            margin: 0;
+            max-width: 760px;
+            line-height: 1.6;
+            color: #103b38;
+        }
+
+        .banner {
+            margin-top: 14px;
+            padding: 12px 14px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.7);
+            color: #19413d;
+            font-size: 0.95rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(12, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .span-7 {
+            grid-column: span 7;
+        }
+
+        .span-5 {
+            grid-column: span 5;
+        }
+
+        .span-12 {
+            grid-column: span 12;
+        }
+
+        .card {
+            padding: 18px;
+        }
+
+        h2,
+        h3 {
+            margin: 0 0 14px;
+        }
+
+        .subtle {
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .profile-form {
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+        }
+
+        .profile-name-field {
+            grid-column: span 4;
+        }
+
+        .profile-age-field {
+            grid-column: span 2;
+        }
+
+        .profile-half-field {
+            grid-column: span 3;
+        }
+
+        .profile-full-field {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            display: block;
+            font-size: 0.92rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        input,
+        select,
+        button,
+        textarea {
+            width: 100%;
+            border-radius: 14px;
+            border: 1px solid var(--line);
+            background: var(--surface);
+            color: var(--text);
+            font: inherit;
+            padding: 12px 14px;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: 2px solid rgba(15, 118, 110, 0.2);
+            border-color: var(--primary);
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        button {
+            cursor: pointer;
+            font-weight: 700;
+            background: var(--primary);
+            color: white;
+            border-color: transparent;
+        }
+
+        button.secondary {
+            background: transparent;
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .message {
+            margin-top: 12px;
+            padding: 12px 14px;
+            border-radius: 14px;
+            display: none;
+        }
+
+        .message.error {
+            display: block;
+            color: var(--danger);
+            background: #fff2f0;
+            border: 1px solid #f7c1b8;
+        }
+
+        .message.success {
+            display: block;
+            color: var(--primary);
+            background: #effaf8;
+            border: 1px solid #b6ece4;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .stat {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 14px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+
+        .stat-value {
+            margin-top: 6px;
+            font-size: 1.3rem;
+            font-weight: 800;
+        }
+
+        .macro-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .macro {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 14px;
+        }
+
+        .guidance {
+            background: linear-gradient(135deg, var(--secondary-soft), #fff1de 100%);
+        }
+
+        .guidance ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .guidance li + li {
+            margin-top: 10px;
+        }
+
+        .method-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .method-item {
+            padding: 14px;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            background: var(--surface);
+        }
+
+        .method-item h3 {
+            margin: 0 0 8px;
+            font-size: 1rem;
+        }
+
+        .method-item p {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.45;
+        }
+
+        #guideNotesList {
+            margin: 0;
+            padding-left: 20px;
+            color: var(--muted);
+            line-height: 1.45;
+        }
+
+        #guideNotesList li + li {
+            margin-top: 8px;
+        }
+
+        .meal-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .meal-list {
+            display: grid;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .meal-item {
+            padding: 14px;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            background: var(--surface);
+        }
+
+        .chat-list {
+            display: grid;
+            gap: 10px;
+            margin-top: 12px;
+            margin-bottom: 12px;
+        }
+
+        .chat-item {
+            padding: 12px;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            background: var(--surface);
+        }
+
+        .chat-item.user {
+            background: #ecf8f6;
+            border-color: #bde8e0;
+        }
+
+        .chat-item.assistant {
+            background: #fff4e8;
+            border-color: #f1d2b3;
+        }
+
+        .chat-meta {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 6px;
+            font-size: 0.84rem;
+            color: var(--muted);
+            font-weight: 700;
+        }
+
+        .chat-text {
+            margin: 0;
+            line-height: 1.45;
+            white-space: pre-wrap;
+        }
+
+        .chat-actions {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 10px;
+            align-items: end;
+        }
+
+        .chat-actions button {
+            width: 140px;
+        }
+
+        .meal-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        .pill {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: #edf6f5;
+            color: var(--primary);
+            font-size: 0.86rem;
+            font-weight: 700;
+        }
+
+        @media (max-width: 860px) {
+            .span-7,
+            .span-5,
+            .span-12 {
+                grid-column: span 12;
+            }
+
+            .form-grid,
+            .profile-form,
+            .meal-grid,
+            .stats,
+            .actions,
+            .method-grid,
+            .macro-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-name-field,
+            .profile-age-field,
+            .profile-half-field,
+            .profile-full-field {
+                grid-column: 1 / -1;
+            }
+
+            .chat-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .chat-actions button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <section class="hero">
+            <div class="hero-inner">
+                <h1>Calories Zone Browser Preview</h1>
+                <p>This is a local preview of the Android app flow. It mirrors the calculator, saved profile, meal logging, and guidance notes so you can review the product quickly in a browser before shipping the Android build.</p>
+                <div class="banner">This is not the Android APK runtime. The actual installable Android artifact is still the APK or AAB built by Gradle.</div>
+            </div>
+        </section>
+
+        <div class="grid">
+            <section class="card span-7">
+                <h2>Profile</h2>
+                <p class="subtle">Set your body stats, activity level, and goal. Save profile keeps the data in your browser for this preview only.</p>
+                <div class="form-grid profile-form">
+                    <div class="profile-name-field">
+                        <label for="profileName">Profile name</label>
+                        <input id="profileName" type="text" value="My profile">
+                    </div>
+                    <div class="profile-age-field">
+                        <label for="age">Age</label>
+                        <input id="age" type="number" min="15" max="90" value="28">
+                    </div>
+                    <div class="profile-half-field">
+                        <label for="heightCm">Height (cm)</label>
+                        <input id="heightCm" type="number" min="120" max="240" step="0.1" value="175">
+                    </div>
+                    <div class="profile-half-field">
+                        <label for="weightKg">Weight (kg)</label>
+                        <input id="weightKg" type="number" min="35" max="300" step="0.1" value="78">
+                    </div>
+                    <div class="profile-half-field">
+                        <label for="sex">Sex</label>
+                        <select id="sex">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+                    <div class="profile-half-field">
+                        <label for="activityLevel">Activity level</label>
+                        <select id="activityLevel">
+                            <option value="Sedentary">Sedentary</option>
+                            <option value="Light">Light</option>
+                            <option value="Moderate" selected>Moderate</option>
+                            <option value="VeryActive">Very active</option>
+                            <option value="Athlete">Athlete</option>
+                        </select>
+                    </div>
+                    <div class="profile-full-field">
+                        <label for="goal">Goal</label>
+                        <select id="goal">
+                            <option value="LoseFat">Lose fat</option>
+                            <option value="Maintain" selected>Maintain</option>
+                            <option value="BuildMuscle">Build muscle</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="actions">
+                    <button id="generatePlanButton" type="button">Generate plan</button>
+                    <button id="saveProfileButton" class="secondary" type="button">Save profile</button>
+                </div>
+                <div id="profileMessage" class="message"></div>
+            </section>
+
+            <section class="card span-5">
+                <h2>Your numbers</h2>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-label">BMR</div>
+                        <div class="stat-value" id="bmrValue">-</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Maintenance</div>
+                        <div class="stat-value" id="maintenanceValue">-</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Target</div>
+                        <div class="stat-value" id="targetValue">-</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">BMI</div>
+                        <div class="stat-value" id="bmiValue">-</div>
+                    </div>
+                </div>
+                <h3 style="margin-top:16px;">Macro split</h3>
+                <div class="macro-grid">
+                    <div class="macro">
+                        <div class="stat-label">Protein</div>
+                        <div class="stat-value" id="proteinValue">-</div>
+                    </div>
+                    <div class="macro">
+                        <div class="stat-label">Carbs</div>
+                        <div class="stat-value" id="carbsValue">-</div>
+                    </div>
+                    <div class="macro">
+                        <div class="stat-label">Fat</div>
+                        <div class="stat-value" id="fatValue">-</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card span-12 guidance">
+                <h2>Local guidance</h2>
+                <p class="subtle">This preview uses the same rule-based guidance approach as the Android app. A future on-device helper should only help with meal text parsing or chat, not with the nutrition math.</p>
+                <ul id="guidanceList"></ul>
+            </section>
+
+            <section class="card span-12">
+                <h2>Guide calculation: beyond calories</h2>
+                <p class="subtle">This score is recalculated from your logged meals using the guide rules. It adds quality checks on top of the calorie and macro plan.</p>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-label">Guide score</div>
+                        <div class="stat-value" id="guideScoreValue">0/100</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Macro match</div>
+                        <div class="stat-value" id="guideMacroValue">0/100</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Satiety</div>
+                        <div class="stat-value" id="guideSatietyValue">0/100</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Slow-carb quality</div>
+                        <div class="stat-value" id="guideSlowCarbValue">0/100</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Nutrient density</div>
+                        <div class="stat-value" id="guideNutrientValue">0/100</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Processing level</div>
+                        <div class="stat-value" id="guideProcessingValue">0/100</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Age/activity fit</div>
+                        <div class="stat-value" id="guideAgeActivityValue">0/100</div>
+                    </div>
+                </div>
+
+                <h3 style="margin-top:18px;">Next guide actions</h3>
+                <ul id="guideNotesList"></ul>
+
+                <h3 style="margin-top:18px;">Guide rules</h3>
+                <div class="method-grid">
+                    <article class="method-item">
+                        <h3>Macronutrient tracking</h3>
+                        <p>Watch protein, carbs, and fats so the same calories do not hide low protein or high sugar.</p>
+                    </article>
+                    <article class="method-item">
+                        <h3>Portion method</h3>
+                        <p>Use hand portions: palm for protein, fist for vegetables, cupped hand for carbs, and thumb for fats.</p>
+                    </article>
+                    <article class="method-item">
+                        <h3>Glycemic load</h3>
+                        <p>Prefer slower-digesting carbs like oats or beans when you want steadier energy and appetite control.</p>
+                    </article>
+                    <article class="method-item">
+                        <h3>Nutrient density</h3>
+                        <p>Choose foods that bring more vitamins, minerals, fiber, and protein for the calories.</p>
+                    </article>
+                    <article class="method-item">
+                        <h3>Satiety</h3>
+                        <p>Build meals around protein, fiber, and water-rich foods that help you stay full longer.</p>
+                    </article>
+                    <article class="method-item">
+                        <h3>Processing level</h3>
+                        <p>Limit sugary snacks, fast food, refined oils, and heavily packaged foods when possible.</p>
+                    </article>
+                    <article class="method-item">
+                        <h3>Meal timing</h3>
+                        <p>Keep meal times consistent and avoid making late-night eating your default routine.</p>
+                    </article>
+                    <article class="method-item">
+                        <h3>Behavior habits</h3>
+                        <p>Account for sleep, stress eating, emotional eating, and your food environment.</p>
+                    </article>
+                    <article class="method-item">
+                        <h3>Progress trends</h3>
+                        <p>Adjust using weekly weight, waist, hunger, energy, and training performance instead of one day.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section class="card span-12">
+                <h2>Local wellness assistant</h2>
+                <p class="subtle">General wellness guidance only. This preview assistant does not diagnose, treat, cure, or prevent medical conditions.</p>
+                <div id="chatList" class="chat-list"></div>
+                <div class="chat-actions">
+                    <textarea id="chatInput" rows="3" placeholder="Ask about meals, calories, macros, hydration, or consistency habits"></textarea>
+                    <button id="sendChatButton" type="button">Send</button>
+                </div>
+                <div id="chatMessage" class="message"></div>
+            </section>
+
+            <section class="card span-12">
+                <h2>Meal log</h2>
+                <p class="subtle">Enter meal entry name and amount in grams, ml, or pounds. Nutrition is auto-calculated as you type.</p>
+                <div class="form-grid">
+                    <div>
+                        <label for="mealName">Meal entry name</label>
+                        <input id="mealName" type="text" placeholder="Chicken rice bowl">
+                    </div>
+                    <div>
+                        <label for="mealAmount">Meal entry amount</label>
+                        <input id="mealAmount" type="number" min="0" step="0.1" placeholder="250">
+                    </div>
+                    <div class="span-12">
+                        <label for="mealUnit">Entry unit</label>
+                        <select id="mealUnit">
+                            <option value="g" selected>Grams (g)</option>
+                            <option value="ml">Milliliters (ml)</option>
+                            <option value="lb">Pounds (lb)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <h3 style="margin-top:18px;">Auto calculated</h3>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-label">Calories</div>
+                        <div class="stat-value" id="estimatedCaloriesValue">-</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Protein</div>
+                        <div class="stat-value" id="estimatedProteinValue">-</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Carbs</div>
+                        <div class="stat-value" id="estimatedCarbsValue">-</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Fat</div>
+                        <div class="stat-value" id="estimatedFatValue">-</div>
+                    </div>
+                </div>
+
+                <div class="actions" style="margin-top:14px; grid-template-columns: 1fr;">
+                    <button id="addMealButton" type="button">Log meal</button>
+                </div>
+                <div class="pill" id="calorieDeltaPill" style="margin-top: 10px;">Generate plan first</div>
+                <div id="mealMessage" class="message"></div>
+
+                <h3 style="margin-top:18px;">Today so far</h3>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-label">Logged calories</div>
+                        <div class="stat-value" id="loggedCaloriesValue">0 kcal</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Protein</div>
+                        <div class="stat-value" id="loggedProteinValue">0 g</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Carbs</div>
+                        <div class="stat-value" id="loggedCarbsValue">0 g</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Fat</div>
+                        <div class="stat-value" id="loggedFatValue">0 g</div>
+                    </div>
+                </div>
+
+                <div class="meal-list" id="mealList"></div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        const storageKeys = {
+            profile: "calories_zone_preview_profile",
+            meals: "calories_zone_preview_meals",
+            plan: "calories_zone_preview_plan",
+            chatMessages: "calories_zone_preview_chat_messages"
+        };
+
+        const maxChatMessages = 30;
+        const defaultChatGreeting = "I am your local wellness assistant. I can help with meal tracking, target progress, and general nutrition habits. I cannot provide medical advice.";
+        const nonMedicalBoundaryMessage = "I can only provide general wellness guidance for meal tracking and nutrition habits. Calories Zone is not a medical device and does not diagnose, treat, cure, or prevent medical conditions. For medical questions, please consult a qualified healthcare professional.";
+        const fallbackChatResponse = "I can help with meal logging, calorie targets, and simple daily nutrition habits. Ask about meal ideas, target progress, or macro planning.";
+
+        const medicalRiskTerms = [
+            "diagnose",
+            "diagnosis",
+            "treat",
+            "treatment",
+            "cure",
+            "prevent",
+            "prescription",
+            "medication",
+            "medicine",
+            "disease",
+            "diabetes",
+            "hypertension",
+            "blood pressure",
+            "cancer",
+            "asthma",
+            "thyroid",
+            "pcos",
+            "anemia",
+            "heart attack",
+            "stroke"
+        ];
+
+        const activityLevels = {
+            Sedentary: { label: "Sedentary", multiplier: 1.2 },
+            Light: { label: "Light", multiplier: 1.375 },
+            Moderate: { label: "Moderate", multiplier: 1.55 },
+            VeryActive: { label: "Very active", multiplier: 1.725 },
+            Athlete: { label: "Athlete", multiplier: 1.9 }
+        };
+
+        const goals = {
+            LoseFat: { label: "Lose fat", calorieMultiplier: 0.85, proteinMultiplier: 2.0 },
+            Maintain: { label: "Maintain", calorieMultiplier: 1.0, proteinMultiplier: 1.8 },
+            BuildMuscle: { label: "Build muscle", calorieMultiplier: 1.1, proteinMultiplier: 2.2 }
+        };
+
+        const gramsPerPound = 453.592;
+
+        const foodProfiles = [
+            { label: "egg", aliasPattern: "eggs?", calories: 78, protein: 6, carbs: 1, fat: 5, gramsPerServing: 50 },
+            { label: "chicken breast", aliasPattern: "chicken(?:\\s+breast)?", calories: 165, protein: 31, carbs: 0, fat: 4, gramsPerServing: 100 },
+            { label: "rice", aliasPattern: "(?:white\\s+|brown\\s+)?rice", calories: 206, protein: 4, carbs: 45, fat: 0, gramsPerServing: 158 },
+            { label: "bread", aliasPattern: "bread|toast", calories: 80, protein: 3, carbs: 15, fat: 1, gramsPerServing: 30 },
+            { label: "oats", aliasPattern: "oats?|oatmeal", calories: 150, protein: 5, carbs: 27, fat: 3, gramsPerServing: 40 },
+            { label: "banana", aliasPattern: "bananas?", calories: 105, protein: 1, carbs: 27, fat: 0, gramsPerServing: 118 },
+            { label: "apple", aliasPattern: "apples?", calories: 95, protein: 0, carbs: 25, fat: 0, gramsPerServing: 182 },
+            { label: "black beans", aliasPattern: "black\\s+beans?", calories: 227, protein: 15, carbs: 41, fat: 1, gramsPerServing: 172 },
+            { label: "milk", aliasPattern: "milk", calories: 122, protein: 8, carbs: 12, fat: 5, gramsPerServing: 244 },
+            { label: "yogurt", aliasPattern: "yogurt|yoghurt", calories: 150, protein: 13, carbs: 17, fat: 4, gramsPerServing: 170 },
+            { label: "salmon", aliasPattern: "salmon", calories: 208, protein: 22, carbs: 0, fat: 13, gramsPerServing: 100 },
+            { label: "beef", aliasPattern: "beef|steak", calories: 250, protein: 26, carbs: 0, fat: 15, gramsPerServing: 100 },
+            { label: "potato", aliasPattern: "potatoes?|potato", calories: 161, protein: 4, carbs: 37, fat: 0, gramsPerServing: 173 },
+            { label: "tuna", aliasPattern: "tuna", calories: 132, protein: 29, carbs: 0, fat: 1, gramsPerServing: 100 },
+            { label: "peanut butter", aliasPattern: "peanut\\s+butter", calories: 94, protein: 4, carbs: 3, fat: 8, gramsPerServing: 16 },
+            { label: "olive oil", aliasPattern: "olive\\s+oil", calories: 119, protein: 0, carbs: 0, fat: 14, gramsPerServing: 15 },
+            { label: "cheese", aliasPattern: "cheese", calories: 113, protein: 7, carbs: 1, fat: 9, gramsPerServing: 28 }
+        ];
+
+        const guideLowScoreThreshold = 70;
+        const obesityBmiThreshold = 30;
+        const lowCalorieLoseFatTarget = 1200;
+        const loseFatMaxProteinCalorieShare = 0.4;
+        const loseFatMaxFatCalorieShare = 0.35;
+        const satietyFoodTerms = ["egg", "chicken", "salmon", "beef", "steak", "tuna", "beans", "oats", "oatmeal", "potato", "apple", "banana", "yogurt", "yoghurt", "milk"];
+        const slowCarbTerms = ["oats", "oatmeal", "beans", "potato", "apple", "banana", "brown rice"];
+        const fastCarbTerms = ["bread", "toast", "white rice", "soda", "juice", "candy", "cake", "cookie", "donut"];
+        const wholeFoodTerms = ["egg", "chicken", "rice", "oats", "oatmeal", "banana", "apple", "beans", "milk", "yogurt", "yoghurt", "salmon", "beef", "steak", "potato", "tuna", "olive oil"];
+        const processedFoodTerms = ["soda", "chips", "candy", "cookie", "cake", "donut", "ice cream", "pizza", "burger", "fries", "fast food", "packaged", "snack", "sausage", "hot dog", "fried"];
+
+        const elements = {
+            profileName: document.getElementById("profileName"),
+            age: document.getElementById("age"),
+            heightCm: document.getElementById("heightCm"),
+            weightKg: document.getElementById("weightKg"),
+            sex: document.getElementById("sex"),
+            activityLevel: document.getElementById("activityLevel"),
+            goal: document.getElementById("goal"),
+            generatePlanButton: document.getElementById("generatePlanButton"),
+            saveProfileButton: document.getElementById("saveProfileButton"),
+            profileMessage: document.getElementById("profileMessage"),
+            mealName: document.getElementById("mealName"),
+            mealAmount: document.getElementById("mealAmount"),
+            mealUnit: document.getElementById("mealUnit"),
+            estimatedCaloriesValue: document.getElementById("estimatedCaloriesValue"),
+            estimatedProteinValue: document.getElementById("estimatedProteinValue"),
+            estimatedCarbsValue: document.getElementById("estimatedCarbsValue"),
+            estimatedFatValue: document.getElementById("estimatedFatValue"),
+            addMealButton: document.getElementById("addMealButton"),
+            mealMessage: document.getElementById("mealMessage"),
+            guidanceList: document.getElementById("guidanceList"),
+            guideScoreValue: document.getElementById("guideScoreValue"),
+            guideMacroValue: document.getElementById("guideMacroValue"),
+            guideSatietyValue: document.getElementById("guideSatietyValue"),
+            guideSlowCarbValue: document.getElementById("guideSlowCarbValue"),
+            guideNutrientValue: document.getElementById("guideNutrientValue"),
+            guideProcessingValue: document.getElementById("guideProcessingValue"),
+            guideAgeActivityValue: document.getElementById("guideAgeActivityValue"),
+            guideNotesList: document.getElementById("guideNotesList"),
+            mealList: document.getElementById("mealList"),
+            calorieDeltaPill: document.getElementById("calorieDeltaPill"),
+            chatList: document.getElementById("chatList"),
+            chatInput: document.getElementById("chatInput"),
+            sendChatButton: document.getElementById("sendChatButton"),
+            chatMessage: document.getElementById("chatMessage")
+        };
+
+        let currentPlan = loadJson(storageKeys.plan) || null;
+        let meals = loadJson(storageKeys.meals) || [];
+        let chatMessages = loadJson(storageKeys.chatMessages) || [];
+
+        if (!Array.isArray(chatMessages)) {
+            chatMessages = [];
+        }
+
+        if (chatMessages.length === 0) {
+            chatMessages = [createChatMessage("Assistant", defaultChatGreeting)];
+            persistChatMessages();
+        }
+
+        hydrateProfile();
+        renderMeals();
+        renderPlan(currentPlan);
+        renderChatMessages();
+        updateMealEstimatePreview();
+
+        elements.generatePlanButton.addEventListener("click", () => {
+            const input = getProfileInput();
+            if (!input) {
+                showMessage(elements.profileMessage, "Enter a realistic age, height, and weight before generating a plan.", true);
+                return;
+            }
+
+            currentPlan = createPlan(input);
+            localStorage.setItem(storageKeys.plan, JSON.stringify(currentPlan));
+            renderPlan(currentPlan);
+            showMessage(elements.profileMessage, "Plan generated in the local browser preview.", false);
+        });
+
+        elements.saveProfileButton.addEventListener("click", () => {
+            const input = getProfileInput();
+            const profileName = elements.profileName.value.trim();
+
+            if (!profileName) {
+                showMessage(elements.profileMessage, "Enter a profile name before saving.", true);
+                return;
+            }
+
+            if (!input) {
+                showMessage(elements.profileMessage, "Enter a realistic age, height, and weight before saving the profile.", true);
+                return;
+            }
+
+            localStorage.setItem(storageKeys.profile, JSON.stringify({
+                profileName,
+                age: elements.age.value,
+                heightCm: elements.heightCm.value,
+                weightKg: elements.weightKg.value,
+                sex: elements.sex.value,
+                activityLevel: elements.activityLevel.value,
+                goal: elements.goal.value
+            }));
+            showMessage(elements.profileMessage, "Profile saved in browser storage.", false);
+        });
+
+        [elements.mealName, elements.mealAmount].forEach((field) => {
+            field.addEventListener("input", updateMealEstimatePreview);
+        });
+        elements.mealUnit.addEventListener("change", updateMealEstimatePreview);
+
+        elements.age.addEventListener("input", () => renderGuideScore());
+        elements.activityLevel.addEventListener("change", () => renderGuideScore());
+
+        elements.addMealButton.addEventListener("click", () => {
+            const name = elements.mealName.value.trim();
+            const amount = parseDecimal(elements.mealAmount.value);
+            const unit = elements.mealUnit.value;
+
+            if (!name || amount === null || amount <= 0) {
+                showMessage(elements.mealMessage, "Enter a meal name and meal entry amount before logging the meal.", true);
+                return;
+            }
+
+            const estimatorInput = buildEstimatorInput(name, amount, unit);
+            const estimate = estimateMealNutrition(estimatorInput);
+            if (!estimate) {
+                showMessage(elements.mealMessage, "Could not auto-estimate this meal. Include foods like eggs, rice, chicken, milk, or fruit.", true);
+                return;
+            }
+
+            meals.unshift({
+                id: String(Date.now()),
+                name: `${name} (${formatAmount(amount)} ${unit})`,
+                calories: estimate.calories,
+                proteinGrams: estimate.proteinGrams,
+                carbsGrams: estimate.carbsGrams,
+                fatGrams: estimate.fatGrams,
+                loggedAtLabel: new Date().toLocaleString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }),
+                matchedFoods: estimate.matchedFoods
+            });
+
+            localStorage.setItem(storageKeys.meals, JSON.stringify(meals));
+            renderMeals();
+            elements.mealName.value = "";
+            elements.mealAmount.value = "";
+            updateMealEstimatePreview();
+            showMessage(elements.mealMessage, "Meal logged in browser storage.", false);
+        });
+
+        elements.sendChatButton.addEventListener("click", sendChatMessage);
+
+        elements.chatInput.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" && !event.shiftKey) {
+                event.preventDefault();
+                sendChatMessage();
+            }
+        });
+
+        function hydrateProfile() {
+            const storedProfile = loadJson(storageKeys.profile);
+            if (!storedProfile) {
+                return;
+            }
+
+            elements.profileName.value = storedProfile.profileName || "My profile";
+            elements.age.value = storedProfile.age || "28";
+            elements.heightCm.value = storedProfile.heightCm || "175";
+            elements.weightKg.value = storedProfile.weightKg || "78";
+            elements.sex.value = storedProfile.sex || "Male";
+            elements.activityLevel.value = storedProfile.activityLevel || "Moderate";
+            elements.goal.value = storedProfile.goal || "Maintain";
+        }
+
+        function getProfileInput() {
+            const age = Number(elements.age.value);
+            const heightCm = Number(elements.heightCm.value);
+            const weightKg = Number(elements.weightKg.value);
+
+            if (!Number.isFinite(age) || !Number.isFinite(heightCm) || !Number.isFinite(weightKg)) {
+                return null;
+            }
+
+            if (age < 15 || age > 90 || heightCm < 120 || heightCm > 240 || weightKg < 35 || weightKg > 300) {
+                return null;
+            }
+
+            return {
+                age,
+                heightCm,
+                weightKg,
+                sex: elements.sex.value,
+                activityLevel: elements.activityLevel.value,
+                goal: elements.goal.value
+            };
+        }
+
+        function createPlan(input) {
+            const bmrRaw = input.sex === "Male"
+                ? 10 * input.weightKg + 6.25 * input.heightCm - 5 * input.age + 5
+                : 10 * input.weightKg + 6.25 * input.heightCm - 5 * input.age - 161;
+
+            const maintenanceCalories = Math.round(bmrRaw * activityLevels[input.activityLevel].multiplier);
+            const bmi = input.weightKg / Math.pow(input.heightCm / 100, 2);
+            const targetCalories = calculateTargetCalories(input.goal, maintenanceCalories, bmi);
+            const proteinGrams = calculateProteinGrams(input, targetCalories);
+            const fatGrams = calculateFatGrams(input, targetCalories);
+            const remainingCalories = Math.max(0, targetCalories - proteinGrams * 4 - fatGrams * 9);
+            const carbsGrams = Math.round(remainingCalories / 4);
+
+            return {
+                bmi,
+                bmr: Math.round(bmrRaw),
+                maintenanceCalories,
+                targetCalories,
+                proteinGrams,
+                carbsGrams,
+                fatGrams,
+                guidanceNotes: buildGuidanceNotes(input, {
+                    bmi,
+                    targetCalories,
+                    proteinGrams,
+                    carbsGrams,
+                    fatGrams
+                })
+            };
+        }
+
+        function calculateTargetCalories(goal, maintenanceCalories, bmi) {
+            if (goal === "LoseFat" && bmi >= obesityBmiThreshold) {
+                return lowCalorieLoseFatTarget;
+            }
+
+            return Math.round(maintenanceCalories * goals[goal].calorieMultiplier);
+        }
+
+        function calculateProteinGrams(input, targetCalories) {
+            const weightBasedProtein = input.weightKg * goals[input.goal].proteinMultiplier;
+            const calorieCappedProtein = input.goal === "LoseFat"
+                ? targetCalories * loseFatMaxProteinCalorieShare / 4
+                : weightBasedProtein;
+
+            return Math.max(0, Math.round(Math.min(weightBasedProtein, calorieCappedProtein)));
+        }
+
+        function calculateFatGrams(input, targetCalories) {
+            const recommendedFatGrams = targetCalories * 0.25 / 9;
+            const minimumFatGrams = input.weightKg * 0.8;
+            const goalFatGrams = input.goal === "LoseFat" && targetCalories <= lowCalorieLoseFatTarget
+                ? recommendedFatGrams
+                : Math.max(minimumFatGrams, recommendedFatGrams);
+            const calorieCappedFat = input.goal === "LoseFat"
+                ? targetCalories * loseFatMaxFatCalorieShare / 9
+                : goalFatGrams;
+
+            return Math.max(0, Math.round(Math.min(goalFatGrams, calorieCappedFat)));
+        }
+
+        function buildGuidanceNotes(input, plan) {
+            const notes = [];
+
+            if (input.goal === "LoseFat") {
+                if (plan.targetCalories === lowCalorieLoseFatTarget) {
+                    notes.push("This is an aggressive fat-loss target. Prioritize protein, high-volume foods, hydration, and consistent energy.");
+                } else {
+                    notes.push("Start with this 15% deficit for two weeks and adjust only if your weekly average weight is flat.");
+                }
+            } else if (input.goal === "Maintain") {
+                notes.push("Use this intake as a baseline and keep your bodyweight within a narrow weekly range.");
+            } else {
+                notes.push("This small surplus is enough for muscle gain without turning the bulk into unnecessary fat gain.");
+            }
+
+            if (plan.bmi < 18.5) {
+                notes.push("Your BMI is low, so avoid aggressive dieting and bias toward strength training plus a mild calorie surplus.");
+            } else if (plan.bmi < 25) {
+                notes.push("Your BMI is in a healthy range, so make small calorie changes and judge progress by weekly trends.");
+            } else if (plan.bmi < 30) {
+                notes.push("A moderate deficit and consistent protein intake should work better than an aggressive cut.");
+            } else {
+                notes.push("Keep the calorie deficit moderate, prioritize steps and sleep, and avoid trying to lose weight too quickly.");
+            }
+
+            switch (input.activityLevel) {
+                case "Sedentary":
+                    notes.push("Increase daily movement first; adding 7k to 8k steps can improve results before cutting calories harder.");
+                    break;
+                case "Light":
+                    notes.push("A short walk after meals will improve appetite control and makes this target easier to follow.");
+                    break;
+                case "Moderate":
+                    notes.push("This activity level pairs well with three to five resistance sessions per week.");
+                    break;
+                case "VeryActive":
+                    notes.push("Keep most of your carbs around training so performance does not fall while you follow the plan.");
+                    break;
+                default:
+                    notes.push("For heavy training blocks, split calories across four or five meals and anchor recovery around protein timing.");
+            }
+
+            notes.push(`Macro anchor: about ${plan.proteinGrams}g protein, ${plan.carbsGrams}g carbs, and ${plan.fatGrams}g fat per day.`);
+            return notes;
+        }
+
+        function renderPlan(plan) {
+            document.getElementById("bmrValue").textContent = plan ? `${plan.bmr} kcal` : "-";
+            document.getElementById("maintenanceValue").textContent = plan ? `${plan.maintenanceCalories} kcal` : "-";
+            document.getElementById("targetValue").textContent = plan ? `${plan.targetCalories} kcal` : "-";
+            document.getElementById("bmiValue").textContent = plan ? plan.bmi.toFixed(1) : "-";
+            document.getElementById("proteinValue").textContent = plan ? `${plan.proteinGrams} g` : "-";
+            document.getElementById("carbsValue").textContent = plan ? `${plan.carbsGrams} g` : "-";
+            document.getElementById("fatValue").textContent = plan ? `${plan.fatGrams} g` : "-";
+
+            elements.guidanceList.innerHTML = "";
+            (plan?.guidanceNotes || ["Generate a plan to see guidance notes."]).forEach((note) => {
+                const item = document.createElement("li");
+                item.textContent = note;
+                elements.guidanceList.appendChild(item);
+            });
+
+            updateCalorieDelta();
+            renderGuideScore();
+        }
+
+        function renderMeals() {
+            const totals = meals.reduce((acc, meal) => ({
+                calories: acc.calories + meal.calories,
+                proteinGrams: acc.proteinGrams + meal.proteinGrams,
+                carbsGrams: acc.carbsGrams + meal.carbsGrams,
+                fatGrams: acc.fatGrams + meal.fatGrams
+            }), { calories: 0, proteinGrams: 0, carbsGrams: 0, fatGrams: 0 });
+
+            document.getElementById("loggedCaloriesValue").textContent = `${totals.calories} kcal`;
+            document.getElementById("loggedProteinValue").textContent = `${totals.proteinGrams} g`;
+            document.getElementById("loggedCarbsValue").textContent = `${totals.carbsGrams} g`;
+            document.getElementById("loggedFatValue").textContent = `${totals.fatGrams} g`;
+
+            elements.mealList.innerHTML = "";
+            if (meals.length === 0) {
+                const empty = document.createElement("div");
+                empty.className = "subtle";
+                empty.textContent = "No meals logged yet.";
+                elements.mealList.appendChild(empty);
+            } else {
+                meals.slice(0, 8).forEach((meal) => {
+                    const item = document.createElement("article");
+                    item.className = "meal-item";
+	                    item.innerHTML = `
+	                        <div class="meal-top">
+	                            <span>${meal.name}</span>
+	                            <span>${meal.loggedAtLabel}</span>
+	                        </div>
+	                        <div>${meal.calories} kcal • P ${meal.proteinGrams}g • C ${meal.carbsGrams}g • F ${meal.fatGrams}g</div>
+	                    `;
+
+                        if (Array.isArray(meal.matchedFoods) && meal.matchedFoods.length > 0) {
+                            const guideFoods = document.createElement("div");
+                            guideFoods.className = "subtle";
+                            guideFoods.style.marginTop = "6px";
+                            guideFoods.textContent = `Guide foods: ${meal.matchedFoods.join(", ")}`;
+                            item.appendChild(guideFoods);
+                        }
+
+	                    const deleteButton = document.createElement("button");
+                    deleteButton.type = "button";
+                    deleteButton.className = "secondary";
+                    deleteButton.style.marginTop = "10px";
+                    deleteButton.textContent = "Delete meal";
+                    deleteButton.addEventListener("click", () => {
+                        deleteMealById(meal.id);
+                    });
+
+                    item.appendChild(deleteButton);
+                    elements.mealList.appendChild(item);
+                });
+            }
+
+            updateCalorieDelta(totals.calories);
+            renderGuideScore(totals);
+        }
+
+        function renderGuideScore(totals) {
+            const score = calculateNutritionGuideScore(getProfileInput(), currentPlan, meals, totals);
+            elements.guideScoreValue.textContent = `${score.overallScore}/100`;
+            elements.guideMacroValue.textContent = `${score.macroScore}/100`;
+            elements.guideSatietyValue.textContent = `${score.satietyScore}/100`;
+            elements.guideSlowCarbValue.textContent = `${score.slowCarbScore}/100`;
+            elements.guideNutrientValue.textContent = `${score.nutrientDensityScore}/100`;
+            elements.guideProcessingValue.textContent = `${score.processingScore}/100`;
+            elements.guideAgeActivityValue.textContent = `${score.ageActivityScore}/100`;
+
+            elements.guideNotesList.innerHTML = "";
+            score.notes.forEach((note) => {
+                const item = document.createElement("li");
+                item.textContent = note;
+                elements.guideNotesList.appendChild(item);
+            });
+        }
+
+        function calculateNutritionGuideScore(input, plan, mealList, providedTotals) {
+            const ageActivityScore = calculateAgeActivityScore(input);
+            if (!mealList.length) {
+                return {
+                    overallScore: 0,
+                    macroScore: 0,
+                    satietyScore: 0,
+                    slowCarbScore: 0,
+                    nutrientDensityScore: 0,
+                    processingScore: 0,
+                    ageActivityScore,
+                    notes: [
+                        "Log meals to calculate your beyond-calories guide score.",
+                        ageActivityNote(input)
+                    ]
+                };
+            }
+
+            const totals = providedTotals || calculateMealTotals(mealList);
+            const signals = mealList.flatMap((meal) => {
+                if (Array.isArray(meal.matchedFoods) && meal.matchedFoods.length) {
+                    return meal.matchedFoods;
+                }
+                return [meal.name];
+            }).map((value) => String(value).toLowerCase());
+
+            const macroScore = calculateMacroScore(plan, totals);
+            const satietyScore = calculateSatietyScore(totals, signals);
+            const slowCarbScore = calculateSlowCarbScore(totals, signals);
+            const nutrientDensityScore = calculateNutrientDensityScore(signals);
+            const processingScore = calculateProcessingScore(signals);
+            const overallScore = Math.round((macroScore + satietyScore + slowCarbScore + nutrientDensityScore + processingScore + ageActivityScore) / 6);
+
+            return {
+                overallScore: clamp(overallScore, 0, 100),
+                macroScore,
+                satietyScore,
+                slowCarbScore,
+                nutrientDensityScore,
+                processingScore,
+                ageActivityScore,
+                notes: buildGuideNotes(input, plan, totals, macroScore, satietyScore, slowCarbScore, nutrientDensityScore, processingScore)
+            };
+        }
+
+        function calculateMealTotals(mealList) {
+            return mealList.reduce((acc, meal) => ({
+                calories: acc.calories + meal.calories,
+                proteinGrams: acc.proteinGrams + meal.proteinGrams,
+                carbsGrams: acc.carbsGrams + meal.carbsGrams,
+                fatGrams: acc.fatGrams + meal.fatGrams
+            }), { calories: 0, proteinGrams: 0, carbsGrams: 0, fatGrams: 0 });
+        }
+
+        function calculateMacroScore(plan, totals) {
+            if (!plan || plan.targetCalories <= 0 || totals.calories <= 0) {
+                return 0;
+            }
+
+            const calorieProgress = clamp(totals.calories / plan.targetCalories, 0.25, 1);
+            const proteinScore = scoreAgainstTarget(totals.proteinGrams, plan.proteinGrams * calorieProgress);
+            const carbsScore = scoreAgainstTarget(totals.carbsGrams, plan.carbsGrams * calorieProgress);
+            const fatScore = scoreAgainstTarget(totals.fatGrams, plan.fatGrams * calorieProgress);
+            return clamp(Math.round((proteinScore + carbsScore + fatScore) / 3), 0, 100);
+        }
+
+        function calculateSatietyScore(totals, signals) {
+            if (totals.calories <= 0) {
+                return 0;
+            }
+
+            const proteinDensity = totals.proteinGrams * 4 / totals.calories;
+            const proteinScore = clamp(Math.round((proteinDensity / 0.24) * 100), 0, 100);
+            const satietyFoodScore = anySignalMatches(signals, satietyFoodTerms) ? 90 : 45;
+            return clamp(Math.round((proteinScore + satietyFoodScore) / 2), 0, 100);
+        }
+
+        function calculateSlowCarbScore(totals, signals) {
+            if (totals.carbsGrams <= 10) {
+                return 80;
+            }
+
+            if (anySignalMatches(signals, slowCarbTerms)) {
+                return 92;
+            }
+
+            if (anySignalMatches(signals, fastCarbTerms)) {
+                return 45;
+            }
+
+            return 65;
+        }
+
+        function calculateNutrientDensityScore(signals) {
+            if (!signals.length) {
+                return 0;
+            }
+
+            const rawScore = signals.reduce((sum, signal) => {
+                if (signalMatches(signal, processedFoodTerms)) {
+                    return sum + 25;
+                }
+
+                if (signalMatches(signal, wholeFoodTerms)) {
+                    return sum + 100;
+                }
+
+                return sum + 65;
+            }, 0);
+            return clamp(Math.round(rawScore / signals.length), 0, 100);
+        }
+
+        function calculateProcessingScore(signals) {
+            if (!signals.length) {
+                return 0;
+            }
+
+            const processedCount = countSignalMatches(signals, processedFoodTerms);
+            return clamp(100 - processedCount * 25, 0, 100);
+        }
+
+        function calculateAgeActivityScore(input) {
+            if (!input) {
+                return 0;
+            }
+
+            let ageScore = 82;
+            if (input.age >= 15 && input.age <= 17) {
+                ageScore = 80;
+            } else if (input.age <= 39) {
+                ageScore = 90;
+            } else if (input.age <= 59) {
+                ageScore = 86;
+            }
+
+            const activityScores = {
+                Sedentary: 55,
+                Light: 70,
+                Moderate: 88,
+                VeryActive: 92,
+                Athlete: 90
+            };
+            const activityScore = activityScores[input.activityLevel] || 0;
+
+            return clamp(Math.round((ageScore + activityScore) / 2), 0, 100);
+        }
+
+        function scoreAgainstTarget(actual, target) {
+            if (target <= 0) {
+                return 0;
+            }
+
+            const differenceRatio = Math.abs(actual - target) / target;
+            return clamp(Math.round(100 - differenceRatio * 100), 0, 100);
+        }
+
+        function buildGuideNotes(input, plan, totals, macroScore, satietyScore, slowCarbScore, nutrientDensityScore, processingScore) {
+            const notes = [portionGuideNote(plan, totals.calories), ageActivityNote(input)];
+
+            if (macroScore < guideLowScoreThreshold) {
+                notes.push("Macro guide: make the next meal balance the weakest macro instead of only chasing calories.");
+            }
+
+            if (satietyScore < guideLowScoreThreshold) {
+                notes.push("Satiety guide: add a clear protein source and a high-volume food such as fruit, beans, potato, oats, or yogurt.");
+            }
+
+            if (slowCarbScore < guideLowScoreThreshold) {
+                notes.push("Glycemic-load guide: swap some fast carbs for oats, beans, potato, fruit, or another slower-digesting carb.");
+            }
+
+            if (nutrientDensityScore < guideLowScoreThreshold) {
+                notes.push("Nutrient-density guide: bias remaining meals toward simple whole foods instead of low-nutrient calories.");
+            }
+
+            if (processingScore < guideLowScoreThreshold) {
+                notes.push("Processing guide: keep heavily processed foods smaller and anchor the day with more minimally processed foods.");
+            }
+
+            if (notes.length === 1) {
+                notes.push("Guide calculation: your logged meals currently match the beyond-calories rules well.");
+            }
+
+            return notes;
+        }
+
+        function ageActivityNote(input) {
+            if (!input) {
+                return "Age/activity guide: update your profile age and activity level so the guide can fit your routine.";
+            }
+
+            let ageLine = "prioritize protein, hydration, strength-friendly meals, and consistent movement";
+            if (input.age >= 15 && input.age <= 17) {
+                ageLine = "keep nutrition changes conservative while your body is still developing";
+            } else if (input.age <= 39) {
+                ageLine = "use your activity level to decide where carbs and meal timing matter most";
+            } else if (input.age <= 59) {
+                ageLine = "prioritize protein distribution, strength-friendly meals, and steady daily movement";
+            }
+
+            const activityLines = {
+                Sedentary: "start with short daily walks before cutting calories harder",
+                Light: "use simple meals and regular walking to improve consistency",
+                Moderate: "place more carbs around training and keep protein steady",
+                VeryActive: "support training with enough carbs, fluids, and recovery meals",
+                Athlete: "spread calories across multiple meals to protect performance and recovery"
+            };
+            const activityLine = activityLines[input.activityLevel] || "update your activity level";
+
+            return `Age/activity guide: ${ageLine}; ${activityLine}.`;
+        }
+
+        function portionGuideNote(plan, loggedCalories) {
+            if (!plan) {
+                return "Portion guide: generate a calorie plan so portions can be judged against your target.";
+            }
+
+            const delta = plan.targetCalories - loggedCalories;
+            if (delta < 0) {
+                return `Portion guide: you are ${Math.abs(delta)} kcal over target, so keep later portions lighter and protein-focused.`;
+            }
+
+            if (delta < plan.targetCalories * 0.15) {
+                return "Portion guide: you are close to target, so keep remaining portions small and simple.";
+            }
+
+            return "Portion guide: use remaining calories for a palm of protein, a fist of plants, and measured carbs or fats.";
+        }
+
+        function anySignalMatches(signals, terms) {
+            return signals.some((value) => terms.some((term) => value.includes(term)));
+        }
+
+        function countSignalMatches(signals, terms) {
+            return signals.filter((value) => signalMatches(value, terms)).length;
+        }
+
+        function signalMatches(value, terms) {
+            return terms.some((term) => value.includes(term));
+        }
+
+        function renderChatMessages() {
+            elements.chatList.innerHTML = "";
+
+            chatMessages.slice(-6).forEach((message) => {
+                const row = document.createElement("article");
+                row.className = `chat-item ${message.role === "User" ? "user" : "assistant"}`;
+
+                const meta = document.createElement("div");
+                meta.className = "chat-meta";
+
+                const role = document.createElement("span");
+                role.textContent = message.role === "User" ? "You" : "Assistant";
+
+                const time = document.createElement("span");
+                time.textContent = message.createdAtLabel;
+
+                meta.appendChild(role);
+                meta.appendChild(time);
+
+                const text = document.createElement("p");
+                text.className = "chat-text";
+                text.textContent = message.text;
+
+                row.appendChild(meta);
+                row.appendChild(text);
+                elements.chatList.appendChild(row);
+            });
+        }
+
+        function sendChatMessage() {
+            const userText = elements.chatInput.value.trim();
+            if (!userText) {
+                showMessage(elements.chatMessage, "Type a message before sending.", true);
+                return;
+            }
+
+            chatMessages = [...chatMessages, createChatMessage("User", userText)].slice(-maxChatMessages);
+            renderChatMessages();
+
+            const reply = buildChatReply(userText);
+            chatMessages = [...chatMessages, createChatMessage("Assistant", reply.message)].slice(-maxChatMessages);
+            persistChatMessages();
+            renderChatMessages();
+
+            elements.chatInput.value = "";
+
+            if (reply.blocked) {
+                showMessage(elements.chatMessage, "Medical requests are limited to general wellness safety guidance.", false);
+            } else {
+                clearMessage(elements.chatMessage);
+            }
+        }
+
+        function buildChatReply(userMessage) {
+            const normalized = userMessage.trim().toLowerCase();
+            if (!normalized) {
+                return {
+                    message: "Type a question and I can help with meal tracking and general wellness guidance.",
+                    blocked: false
+                };
+            }
+
+            if (containsMedicalTerms(normalized)) {
+                return { message: nonMedicalBoundaryMessage, blocked: true };
+            }
+
+            const context = buildChatContext();
+            const rawResponse = completeChatPrompt(userMessage, context).trim();
+            if (!rawResponse) {
+                return { message: fallbackChatResponse, blocked: false };
+            }
+
+            if (containsMedicalTerms(rawResponse.toLowerCase())) {
+                return { message: nonMedicalBoundaryMessage, blocked: true };
+            }
+
+            return { message: rawResponse, blocked: false };
+        }
+
+        function completeChatPrompt(userMessage, context) {
+            const normalized = userMessage.toLowerCase();
+
+            if (containsAny(normalized, ["remaining", "left", "over", "target", "today"])) {
+                return calorieStatusReply(context);
+            }
+
+            if (containsAny(normalized, ["calorie", "calories", "kcal"])) {
+                const estimateReply = calorieEstimateReply(userMessage);
+                if (estimateReply) {
+                    return estimateReply;
+                }
+            }
+
+            if (containsAny(normalized, ["macro", "protein", "carb", "fat"])) {
+                return macroReply(context);
+            }
+
+            if (containsAny(normalized, ["meal", "breakfast", "lunch", "dinner", "snack", "idea"])) {
+                return mealIdeaReply(context);
+            }
+
+            if (containsAny(normalized, ["water", "hydrate", "hydration"])) {
+                return "Hydration baseline: aim for steady water intake through the day and add extra around training or very hot weather.";
+            }
+
+            if (containsAny(normalized, ["data", "privacy", "store", "offline", "local"])) {
+                return "Your profile, meals, and chat stay local on this device in this version.";
+            }
+
+            return generalReply(context);
+        }
+
+        function calorieEstimateReply(userMessage) {
+            const estimatorInput = toEstimatorInput(userMessage);
+            if (!estimatorInput) {
+                return null;
+            }
+
+            const estimate = estimateMealNutrition(estimatorInput);
+            if (!estimate) {
+                return null;
+            }
+
+            return `Estimated for ${estimatorInput}: ${estimate.calories} kcal • P ${estimate.proteinGrams}g • C ${estimate.carbsGrams}g • F ${estimate.fatGrams}g.`;
+        }
+
+        function toEstimatorInput(userMessage) {
+            let value = userMessage.toLowerCase();
+            value = value.replace(/[?!.:,;]/g, " ");
+            value = value.replace(/\bhow\s+much\s+(?:calories?|kcal)\s+(?:in|for)\b/gi, " ");
+            value = value.replace(/\bhow\s+many\s+(?:calories?|kcal)\s+(?:in|for)\b/gi, " ");
+            value = value.replace(/\b(?:calories?|kcal)\s+(?:in|for)\b/gi, " ");
+            value = value.replace(/\b(?:boiled|grilled|fried|baked|steamed|roasted|raw)\b/gi, " ");
+            value = value.replace(/\s+/g, " ").trim();
+
+            return value;
+        }
+
+        function calorieStatusReply(context) {
+            if (context.targetCalories === null) {
+                return "Generate your calorie plan first, then I can compare your logged intake against your target.";
+            }
+
+            const delta = context.targetCalories - context.mealTotals.calories;
+            if (delta >= 0) {
+                return `You have logged ${context.mealTotals.calories} kcal and your target is ${context.targetCalories} kcal. You are ${delta} kcal under target today.`;
+            }
+
+            return `You have logged ${context.mealTotals.calories} kcal and your target is ${context.targetCalories} kcal. You are ${Math.abs(delta)} kcal over target today.`;
+        }
+
+        function macroReply(context) {
+            let goalLine = "";
+            if (context.goal === "LoseFat") {
+                goalLine = "For fat loss, keep protein consistent and manage calories with mostly whole foods.";
+            } else if (context.goal === "Maintain") {
+                goalLine = "For maintenance, keep portions stable and monitor weekly weight trend.";
+            } else {
+                goalLine = "For muscle gain, keep protein high and place more carbs around training.";
+            }
+
+            return `${goalLine} A simple structure is 3 to 4 meals with protein in each meal and vegetables in at least 2 meals.`;
+        }
+
+        function mealIdeaReply(context) {
+            if (context.goal === "LoseFat") {
+                return "Try a high-satiety plate: grilled chicken, large salad, olive oil, and fruit.";
+            }
+
+            if (context.goal === "Maintain") {
+                return "Try a balanced plate: rice, lean protein, vegetables, and yogurt.";
+            }
+
+            return "Try a higher-energy plate: rice or potatoes, salmon or beef, vegetables, and milk or yogurt.";
+        }
+
+        function generalReply(context) {
+            const targetLine = context.targetCalories === null
+                ? "Generate a plan to get your target calories first."
+                : `Your current target is ${context.targetCalories} kcal.`;
+
+            return `${targetLine} Focus on consistency: log meals, compare against target, and adjust using weekly trends instead of single days.`;
+        }
+
+        function buildChatContext() {
+            const mealTotals = meals.reduce((acc, meal) => ({
+                calories: acc.calories + meal.calories,
+                proteinGrams: acc.proteinGrams + meal.proteinGrams,
+                carbsGrams: acc.carbsGrams + meal.carbsGrams,
+                fatGrams: acc.fatGrams + meal.fatGrams
+            }), { calories: 0, proteinGrams: 0, carbsGrams: 0, fatGrams: 0 });
+
+            return {
+                profileName: elements.profileName.value.trim() || "My profile",
+                goal: elements.goal.value,
+                targetCalories: currentPlan ? currentPlan.targetCalories : null,
+                mealTotals
+            };
+        }
+
+        function createChatMessage(role, text) {
+            return {
+                id: `${Date.now()}-${Math.random().toString(16).slice(2, 8)}`,
+                role,
+                text,
+                createdAtLabel: new Date().toLocaleString([], {
+                    month: "short",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit"
+                })
+            };
+        }
+
+        function persistChatMessages() {
+            localStorage.setItem(storageKeys.chatMessages, JSON.stringify(chatMessages));
+        }
+
+        function deleteMealById(mealId) {
+            const updatedMeals = meals.filter((meal) => meal.id !== mealId);
+            if (updatedMeals.length === meals.length) {
+                return;
+            }
+
+            meals = updatedMeals;
+            localStorage.setItem(storageKeys.meals, JSON.stringify(meals));
+            renderMeals();
+            showMessage(elements.mealMessage, "Meal removed from browser storage.", false);
+        }
+
+        function updateMealEstimatePreview() {
+            const name = elements.mealName.value.trim();
+            const amount = parseDecimal(elements.mealAmount.value);
+
+            if (!name || amount === null || amount <= 0) {
+                renderEstimatedNutrition(null);
+                return;
+            }
+
+            const estimatorInput = buildEstimatorInput(name, amount, elements.mealUnit.value);
+            renderEstimatedNutrition(estimateMealNutrition(estimatorInput));
+        }
+
+        function renderEstimatedNutrition(estimate) {
+            elements.estimatedCaloriesValue.textContent = estimate ? `${estimate.calories} kcal` : "-";
+            elements.estimatedProteinValue.textContent = estimate ? `${estimate.proteinGrams} g` : "-";
+            elements.estimatedCarbsValue.textContent = estimate ? `${estimate.carbsGrams} g` : "-";
+            elements.estimatedFatValue.textContent = estimate ? `${estimate.fatGrams} g` : "-";
+        }
+
+        function buildEstimatorInput(name, amount, unit) {
+            return `${formatAmount(amount)} ${unit} ${name}`;
+        }
+
+        function estimateMealNutrition(mealText) {
+            const normalizedMeal = mealText.trim().toLowerCase();
+            if (!normalizedMeal) {
+                return null;
+            }
+
+            let calories = 0;
+            let protein = 0;
+            let carbs = 0;
+            let fat = 0;
+            const matchedFoods = [];
+
+            foodProfiles.forEach((profile) => {
+                const servings = findServings(normalizedMeal, profile);
+                if (servings <= 0) {
+                    return;
+                }
+
+                calories += profile.calories * servings;
+                protein += profile.protein * servings;
+                carbs += profile.carbs * servings;
+                fat += profile.fat * servings;
+
+                if (servings === 1) {
+                    matchedFoods.push(profile.label);
+                } else {
+                    matchedFoods.push(`${formatServings(servings)} x ${profile.label}`);
+                }
+            });
+
+            if (!matchedFoods.length) {
+                return null;
+            }
+
+            return {
+                calories: Math.max(0, Math.round(calories)),
+                proteinGrams: Math.max(0, Math.round(protein)),
+                carbsGrams: Math.max(0, Math.round(carbs)),
+                fatGrams: Math.max(0, Math.round(fat)),
+                matchedFoods
+            };
+        }
+
+        function findServings(mealText, profile) {
+            const aliasRegex = new RegExp(`\\b(?:${profile.aliasPattern})\\b`, "i");
+            if (!aliasRegex.test(mealText)) {
+                return 0;
+            }
+
+            if (profile.gramsPerServing) {
+                const metricRegex = new RegExp(
+                    `(\\d+(?:\\.\\d+)?)\\s*(g|gram|grams|ml|milliliter|milliliters|lb|lbs|pound|pounds)\\s*(?:of\\s+)?(?:${profile.aliasPattern})\\b|(?:${profile.aliasPattern})\\b\\s*(\\d+(?:\\.\\d+)?)\\s*(g|gram|grams|ml|milliliter|milliliters|lb|lbs|pound|pounds)`,
+                    "i"
+                );
+                const metricMatch = mealText.match(metricRegex);
+                if (metricMatch) {
+                    const amountValue = Number(metricMatch[1] || metricMatch[3]);
+                    const unitLabel = String(metricMatch[2] || metricMatch[4] || "").toLowerCase();
+                    const gramsValue = toGrams(amountValue, unitLabel);
+
+                    if (Number.isFinite(gramsValue) && gramsValue > 0) {
+                        return clamp(gramsValue / profile.gramsPerServing, 0.25, 20);
+                    }
+                }
+            }
+
+            const prefixCountRegex = new RegExp(
+                `(\\d+(?:\\.\\d+)?)\\s*(?:x\\s*)?(?:cups?|cup|slices?|slice|tbsp|tablespoons?|tsp|teaspoons?|servings?|pieces?|piece|cans?|can|bowls?|bowl)?\\s*(?:of\\s+)?(?:${profile.aliasPattern})\\b`,
+                "i"
+            );
+            const prefixMatch = mealText.match(prefixCountRegex);
+            if (prefixMatch) {
+                const count = Number(prefixMatch[1]);
+                if (Number.isFinite(count) && count > 0) {
+                    return clamp(count, 0.25, 20);
+                }
+            }
+
+            const postfixCountRegex = new RegExp(
+                `(?:${profile.aliasPattern})\\b\\s*(\\d+(?:\\.\\d+)?)\\s*(?:cups?|cup|slices?|slice|tbsp|tablespoons?|tsp|teaspoons?|servings?|pieces?|piece|cans?|can|bowls?|bowl)?`,
+                "i"
+            );
+            const postfixMatch = mealText.match(postfixCountRegex);
+            if (postfixMatch) {
+                const count = Number(postfixMatch[1]);
+                if (Number.isFinite(count) && count > 0) {
+                    return clamp(count, 0.25, 20);
+                }
+            }
+
+            return 1;
+        }
+
+        function toGrams(value, unit) {
+            if (!Number.isFinite(value)) {
+                return NaN;
+            }
+
+            switch (unit) {
+                case "g":
+                case "gram":
+                case "grams":
+                    return value;
+                case "ml":
+                case "milliliter":
+                case "milliliters":
+                    return value;
+                case "lb":
+                case "lbs":
+                case "pound":
+                case "pounds":
+                    return value * gramsPerPound;
+                default:
+                    return NaN;
+            }
+        }
+
+        function formatServings(servings) {
+            return Number.isInteger(servings) ? String(servings) : servings.toFixed(1);
+        }
+
+        function clamp(value, min, max) {
+            return Math.min(max, Math.max(min, value));
+        }
+
+        function formatAmount(value) {
+            return Number.isInteger(value) ? String(value) : value.toFixed(1);
+        }
+
+        function updateCalorieDelta(loggedCalories) {
+            const totalCalories = typeof loggedCalories === "number"
+                ? loggedCalories
+                : meals.reduce((sum, meal) => sum + meal.calories, 0);
+
+            if (!currentPlan) {
+                elements.calorieDeltaPill.textContent = "Generate plan first";
+                return;
+            }
+
+            const delta = currentPlan.targetCalories - totalCalories;
+            elements.calorieDeltaPill.textContent = delta >= 0
+                ? `${delta} kcal remaining`
+                : `${Math.abs(delta)} kcal over`;
+        }
+
+        function showMessage(node, message, isError) {
+            node.textContent = message;
+            node.className = isError ? "message error" : "message success";
+        }
+
+        function clearMessage(node) {
+            node.textContent = "";
+            node.className = "message";
+        }
+
+        function containsMedicalTerms(text) {
+            return medicalRiskTerms.some((term) => {
+                const pattern = new RegExp(`\\b${escapeRegex(term)}\\b`, "i");
+                return pattern.test(text);
+            });
+        }
+
+        function containsAny(text, terms) {
+            return terms.some((term) => {
+                const pattern = new RegExp(`\\b${escapeRegex(term)}\\b`, "i");
+                return pattern.test(text);
+            });
+        }
+
+        function escapeRegex(value) {
+            return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        }
+
+        function loadJson(key) {
+            try {
+                const raw = localStorage.getItem(key);
+                return raw ? JSON.parse(raw) : null;
+            } catch (_) {
+                return null;
+            }
+        }
+
+        function parseDecimal(value) {
+            const number = Number(value);
+            return Number.isFinite(number) ? number : null;
+        }
+    </script>
+</body>
+</html>
