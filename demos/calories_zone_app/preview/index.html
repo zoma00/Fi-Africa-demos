@@ -1546,7 +1546,7 @@
                 return null;
             }
 
-            return `Estimated for ${estimatorInput}: ${estimate.calories} kcal • P ${estimate.proteinGrams}g • C ${estimate.carbsGrams}g • F ${estimate.fatGrams}g.`;
+            return `Estimated for ${estimatorInput}: ${estimate.calories} kcal • P ${estimate.proteinGrams}g • C ${estimate.carbsGrams}g • F ${estimate.fatGrams}g. Guide foods: ${estimate.matchedFoods.join(", ")}.`;
         }
 
         function toEstimatorInput(userMessage) {
@@ -1727,8 +1727,9 @@
             }
 
             if (profile.gramsPerServing) {
+                const optionalDescriptors = "(?:[a-z]+\\s+){0,3}";
                 const metricRegex = new RegExp(
-                    `(\\d+(?:\\.\\d+)?)\\s*(g|gram|grams|ml|milliliter|milliliters|lb|lbs|pound|pounds)\\s*(?:of\\s+)?(?:${profile.aliasPattern})\\b|(?:${profile.aliasPattern})\\b\\s*(\\d+(?:\\.\\d+)?)\\s*(g|gram|grams|ml|milliliter|milliliters|lb|lbs|pound|pounds)`,
+                    `(\\d+(?:\\.\\d+)?)\\s*(g|gram|grams|ml|milliliter|milliliters|lb|lbs|pound|pounds)\\s*(?:of\\s+)?${optionalDescriptors}(?:${profile.aliasPattern})\\b|(?:${profile.aliasPattern})\\b\\s*(\\d+(?:\\.\\d+)?)\\s*(g|gram|grams|ml|milliliter|milliliters|lb|lbs|pound|pounds)`,
                     "i"
                 );
                 const metricMatch = mealText.match(metricRegex);
