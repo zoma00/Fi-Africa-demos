@@ -611,6 +611,7 @@
             <section class="card span-12">
                 <h2>Local wellness assistant</h2>
                 <p class="subtle">General wellness guidance only. This preview assistant does not diagnose, treat, cure, or prevent medical conditions.</p>
+                <p class="subtle">Food estimates use a local preview index, including values extracted from the Carbs &amp; Cals sample PDF where available.</p>
                 <div id="chatList" class="chat-list"></div>
                 <div class="chat-actions">
                     <textarea id="chatInput" rows="3" placeholder="Ask about meals, calories, macros, hydration, or consistency habits"></textarea>
@@ -622,6 +623,7 @@
             <section class="card span-12">
                 <h2>Meal log</h2>
                 <p class="subtle">Enter meal entry name and amount in grams, ml, or pounds. Nutrition is auto-calculated as you type.</p>
+                <p class="subtle">The calorie index is local to this preview and combines built-in estimates with a Carbs &amp; Cals sample-derived subset.</p>
                 <div class="form-grid meal-form">
                     <div>
                         <label for="mealName">Meal entry name</label>
@@ -745,7 +747,167 @@
 
         const gramsPerPound = 453.592;
 
-        const foodProfiles = [
+        const carbsAndCalsSampleProfiles = [
+            sampleFood("bourbon cream", 12, 58, 1, 8, 3),
+            sampleFood("chocolate digestive", 15, 73, 1, 9, 4),
+            sampleFood("custard cream", 12, 60, 1, 8, 2),
+            sampleFood("digestive biscuit", 15, 69, 1, 10, 3, ["digestive"]),
+            sampleFood("chocolate chip cookie", 10, 47, 1, 6, 2),
+            sampleFood("fig roll", 21, 76, 1, 14, 2),
+            sampleFood("ginger biscuit", 10, 44, 0, 8, 2),
+            sampleFood("chocolate oat biscuit", 19, 93, 1, 12, 5),
+            sampleFood("chocolate sandwich biscuit", 11, 51, 1, 7, 2),
+            sampleFood("gingerbread man", 58, 215, 3, 38, 7),
+            sampleFood("iced ring", 6, 27, 0, 5, 1),
+            sampleFood("burger bun", 82, 216, 7, 40, 4),
+            sampleFood("finger roll", 41, 104, 4, 21, 1),
+            sampleFood("baguette", 85, 224, 8, 48, 2),
+            sampleFood("croutons", 15, 66, 2, 10, 2),
+            sampleFood("banana bread", 55, 182, 2, 30, 7),
+            sampleFood("ciabatta", 100, 271, 10, 52, 4),
+            sampleFood("panini", 100, 277, 10, 47, 5),
+            sampleFood("focaccia", 60, 176, 5, 31, 4),
+            sampleFood("toast with chocolate spread and butter", 33, 137, 3, 18, 6, ["toast with choc spread", "chocolate spread toast"]),
+            sampleFood("toast with honey and butter", 33, 124, 3, 19, 5, ["honey toast"]),
+            sampleFood("toast with jam and butter", 33, 123, 3, 19, 5, ["jam toast"]),
+            sampleFood("toast with lemon curd and butter", 33, 123, 3, 18, 5, ["lemon curd toast"]),
+            sampleFood("toast with marmalade and butter", 33, 123, 3, 19, 5, ["marmalade toast"]),
+            sampleFood("toast with peanut butter and butter", 33, 140, 4, 16, 7, ["peanut butter toast"]),
+            sampleFood("low-carb cooked breakfast", 165, 182, 12, 2, 14, ["low carb cooked breakfast"]),
+            sampleFood("kippers spinach and peppers", 175, 191, 12, 3, 12, ["kippers spinach peppers"]),
+            sampleFood("scrambled eggs tomatoes and halloumi", 150, 176, 13, 3, 13, ["scrambled eggs with tomatoes and halloumi"]),
+            sampleFood("apple danish", 87, 308, 6, 39, 14),
+            sampleFood("chocolate chip twist", 85, 340, 4, 32, 22),
+            sampleFood("chocolate eclair", 56, 217, 3, 16, 16, ["chocolate éclair"]),
+            sampleFood("corn flake cake", 54, 248, 3, 40, 10),
+            sampleFood("cinnamon swirl", 79, 357, 4, 36, 22),
+            sampleFood("fruit trellis", 58, 238, 3, 27, 13),
+            sampleFood("cup cake", 56, 272, 2, 34, 14, ["cupcake"]),
+            sampleFood("custard slice", 106, 286, 2, 40, 13),
+            sampleFood("pain aux raisins", 95, 318, 6, 37, 16),
+            sampleFood("pecan plait", 81, 340, 5, 36, 19),
+            sampleFood("custard tart", 92, 242, 6, 26, 13),
+            sampleFood("mini battenburg", 30, 106, 1, 20, 3),
+            sampleFood("cheddar", 25, 104, 6, 0, 9),
+            sampleFood("cottage cheese", 50, 52, 5, 2, 3),
+            sampleFood("cream cheese", 25, 62, 1, 1, 6),
+            sampleFood("edam", 25, 85, 7, 0, 7),
+            sampleFood("black forest gateau", 60, 177, 2, 22, 9),
+            sampleFood("bread and butter pudding", 81, 197, 5, 19, 11),
+            sampleFood("brownie", 45, 228, 3, 24, 14),
+            sampleFood("cheesecake", 100, 294, 4, 35, 16),
+            sampleFood("orange juice", 150, 50, 1, 12, 0),
+            sampleFood("pineapple juice", 150, 62, 0, 16, 0),
+            sampleFood("tomato juice", 150, 21, 1, 5, 0),
+            sampleFood("strawberry banana smoothie", 150, 74, 1, 18, 0, ["smoothie strawberry banana", "smoothie"]),
+            sampleFood("squash", 150, 11, 0, 3, 0),
+            sampleFood("squash no added sugar", 150, 2, 0, 0, 0, ["no added sugar squash"]),
+            sampleFood("boiled egg", 60, 79, 8, 0, 5),
+            sampleFood("fried egg", 50, 115, 8, 0, 9),
+            sampleFood("poached egg", 50, 79, 8, 0, 5),
+            sampleFood("scrambled egg with milk", 70, 125, 8, 1, 10, ["scrambled egg"]),
+            sampleFood("plain omelette", 50, 96, 5, 0, 8, ["omelette plain"]),
+            sampleFood("cheese omelette", 60, 161, 10, 0, 14, ["omelette cheese"]),
+            sampleFood("peach", 138, 46, 1, 10, 0),
+            sampleFood("pear", 104, 45, 0, 11, 0),
+            sampleFood("tinned peaches in juice", 80, 31, 0, 8, 0, ["peaches tinned in juice", "tinned peaches"]),
+            sampleFood("tinned pears in juice", 115, 38, 0, 10, 0, ["pears tinned in juice", "tinned pears"]),
+            sampleFood("nectarine", 80, 32, 1, 7, 0),
+            sampleFood("persimmon", 70, 58, 1, 14, 0),
+            sampleFood("breadstick", 5, 10, 0, 2, 0),
+            sampleFood("crispbread", 14, 48, 1, 10, 0),
+            sampleFood("naan bread", 84, 220, 4, 37, 6, ["naan"]),
+            sampleFood("pitta bread", 66, 175, 3, 33, 3, ["pita bread", "pitta"]),
+            sampleFood("rice cake", 8, 31, 1, 6, 0),
+            sampleFood("sweet biscuit", 12, 60, 1, 8, 3),
+            sampleFood("tea biscuit", 8, 38, 0, 5, 2),
+            sampleFood("quiche lorraine", 100, 269, 9, 20, 18),
+            sampleFood("salmon frittata", 145, 242, 18, 3, 17),
+            sampleFood("chicken caesar salad", 100, 182, 16, 1, 13),
+            sampleFood("greek salad", 140, 183, 4, 3, 18),
+            sampleFood("tuna nicoise salad", 160, 198, 7, 5, 17, ["tuna niçoise salad"]),
+            sampleFood("onion rings battered", 26, 65, 1, 7, 4, ["battered onion rings", "onion rings"]),
+            sampleFood("pickled onions", 35, 8, 0, 2, 0),
+            sampleFood("sun-dried tomatoes", 25, 43, 1, 2, 3, ["sun dried tomatoes"]),
+            sampleFood("stuffing", 65, 63, 2, 13, 1),
+            sampleFood("yorkshire pudding", 40, 79, 3, 10, 3),
+            sampleFood("grilled salmon steak", 130, 273, 34, 0, 15, ["salmon steak grilled", "salmon steak"]),
+            sampleFood("crab meat", 30, 23, 5, 0, 0),
+            sampleFood("baked trout fillet", 60, 90, 14, 0, 4, ["trout fillet baked", "trout fillet"]),
+            sampleFood("seafood sticks", 40, 41, 3, 6, 1),
+            sampleFood("grilled tuna steak", 75, 102, 24, 0, 1, ["tuna steak grilled", "tuna steak"]),
+            sampleFood("fried calamari", 30, 86, 3, 8, 5, ["calamari fried", "calamari"]),
+            sampleFood("whole milk", 150, 95, 5, 7, 5, ["milk whole"]),
+            sampleFood("semi-skimmed milk", 150, 69, 5, 7, 3, ["semi skimmed milk", "milk semi skimmed"]),
+            sampleFood("one percent milk", 150, 61, 5, 7, 2, ["1% milk", "milk 1%"]),
+            sampleFood("skimmed milk", 150, 51, 5, 7, 0, ["skim milk", "milk skimmed"]),
+            sampleFood("dried fruit and nuts", 10, 44, 1, 5, 2),
+            sampleFood("roasted peanuts", 10, 60, 2, 1, 5, ["peanuts roasted", "peanuts"]),
+            sampleFood("hazelnuts", 10, 65, 1, 1, 6),
+            sampleFood("pecans", 10, 69, 1, 1, 7),
+            sampleFood("macadamia nuts", 10, 75, 1, 0, 8),
+            sampleFood("pine nuts", 10, 69, 1, 0, 7),
+            sampleFood("rice noodles", 70, 86, 1, 20, 0, ["noodles rice"]),
+            sampleFood("tinned pasta shapes", 70, 42, 1, 9, 0, ["pasta shapes tinned"]),
+            sampleFood("tinned ravioli", 70, 54, 2, 10, 1, ["ravioli tinned"]),
+            sampleFood("tinned spaghetti", 70, 50, 1, 11, 0, ["spaghetti tinned"]),
+            sampleFood("baked potato slices", 28, 52, 1, 8, 2, ["potato slices baked"]),
+            sampleFood("roast potatoes in oil", 38, 61, 1, 10, 2, ["roast potatoes"]),
+            sampleFood("baked sweet potatoes", 55, 63, 1, 15, 0, ["sweet potatoes baked", "baked sweet potato"]),
+            sampleFood("mashed sweet potato", 55, 46, 1, 11, 0, ["sweet potato mash", "mashed sweet potatoes"]),
+            sampleFood("egg fried rice", 55, 102, 2, 18, 3),
+            sampleFood("jollof rice", 55, 97, 1, 10, 6),
+            sampleFood("mexican rice", 55, 86, 2, 17, 1),
+            sampleFood("pilau rice", 55, 74, 1, 13, 2),
+            sampleFood("blt sandwich", 85, 196, 7, 20, 10, ["blt"]),
+            sampleFood("coronation chicken sandwich", 90, 221, 9, 22, 11, ["coronation chicken"]),
+            sampleFood("cheese and pickle sandwich", 80, 226, 10, 22, 12, ["cheese pickle sandwich"]),
+            sampleFood("egg mayo sandwich", 60, 146, 5, 17, 7),
+            sampleFood("chicken salad sandwich", 95, 163, 10, 21, 5),
+            sampleFood("grilled cheese sandwich", 63, 197, 10, 15, 11),
+            sampleFood("fudge", 12, 52, 0, 10, 2),
+            sampleFood("milk chocolate", 16, 83, 1, 9, 5, ["chocolate milk"]),
+            sampleFood("dark chocolate", 16, 82, 1, 10, 4),
+            sampleFood("small marshmallows", 15, 49, 1, 12, 0, ["marshmallows small", "marshmallow small"]),
+            sampleFood("large marshmallows", 30, 98, 1, 25, 0, ["marshmallows large", "marshmallow large"]),
+            sampleFood("chunky veg soup", 130, 51, 2, 10, 1, ["chunky vegetable soup"]),
+            sampleFood("mushroom soup", 130, 60, 1, 5, 4),
+            sampleFood("onion soup", 130, 53, 1, 7, 3),
+            sampleFood("cream of tomato soup", 130, 66, 1, 10, 3, ["tomato soup cream of", "tomato soup cream"]),
+            sampleFood("sweet chilli sauce", 18, 33, 0, 8, 0),
+            sampleFood("thousand island dressing", 14, 29, 0, 2, 2),
+            sampleFood("sweet and sour sauce", 15, 24, 0, 5, 1),
+            sampleFood("white sauce", 50, 79, 2, 6, 5),
+            sampleFood("tartare sauce", 30, 90, 0, 5, 7),
+            sampleFood("worcestershire sauce", 5, 6, 0, 1, 0),
+            sampleFood("boiled spinach", 40, 8, 1, 0, 0, ["spinach boiled"]),
+            sampleFood("spring greens", 40, 8, 1, 1, 0),
+            sampleFood("sweetcorn", 40, 31, 1, 6, 1),
+            sampleFood("boiled corn on the cob", 44, 17, 1, 2, 0, ["corn on the cob boiled", "corn on the cob"]),
+            sampleFood("quorn chicken pieces", 50, 52, 7, 3, 1),
+            sampleFood("fried tofu", 40, 104, 9, 1, 7, ["tofu fried"]),
+            sampleFood("fried quorn burger", 41, 107, 7, 4, 7, ["quorn burger fried"]),
+            sampleFood("grilled quorn burger", 38, 80, 7, 4, 4, ["quorn burger grilled"]),
+            sampleFood("fried veggie burger", 100, 255, 5, 28, 13, ["veggie burger fried"]),
+            sampleFood("grilled veggie burger", 100, 228, 5, 28, 10, ["veggie burger grilled"]),
+            sampleFood("fried quorn sausage", 39, 97, 5, 5, 6, ["quorn sausage fried"]),
+            sampleFood("grilled quorn sausage", 36, 70, 5, 5, 3, ["quorn sausage grilled"]),
+            sampleFood("fried veggie sausage", 47, 124, 3, 9, 8, ["veggie sausage fried"]),
+            sampleFood("grilled veggie sausage", 44, 97, 3, 9, 5, ["veggie sausage grilled"]),
+            sampleFood("fruit yogurt", 125, 131, 5, 17, 4, ["fruit yoghurt"]),
+            sampleFood("greek yogurt", 125, 166, 7, 6, 13, ["greek yoghurt"]),
+            sampleFood("fruit yogurt fat free", 125, 72, 6, 11, 0, ["fat free fruit yogurt", "fruit yoghurt fat free", "fat free fruit yoghurt"]),
+            sampleFood("greek yogurt low fat", 125, 96, 9, 8, 3, ["low fat greek yogurt", "greek yoghurt low fat", "low fat greek yoghurt"]),
+            sampleFood("fruit yogurt pot", 125, 124, 5, 17, 4, ["fruit yoghurt pot"]),
+            sampleFood("fruit yogurt pot fat free", 125, 72, 6, 11, 0, ["fat free fruit yogurt pot", "fruit yoghurt pot fat free"]),
+            sampleFood("soya yogurt", 125, 91, 3, 16, 2, ["soya yoghurt"]),
+            sampleFood("chicken korma", 225, 286, 33, 10, 11),
+            sampleFood("king prawn bhuna", 175, 210, 15, 3, 15),
+            sampleFood("chicken tandoori", 175, 375, 48, 4, 19),
+            sampleFood("lamb biryani", 225, 439, 16, 47, 21)
+        ];
+
+        const builtInFoodProfiles = [
             { label: "egg", aliasPattern: "eggs?", calories: 78, protein: 6, carbs: 1, fat: 5, gramsPerServing: 50 },
             { label: "chicken breast", aliasPattern: "chicken(?:\\s+breast)?", calories: 165, protein: 31, carbs: 0, fat: 4, gramsPerServing: 100 },
             { label: "rice", aliasPattern: "(?:white\\s+|brown\\s+)?rice", calories: 206, protein: 4, carbs: 45, fat: 0, gramsPerServing: 158 },
@@ -764,6 +926,60 @@
             { label: "olive oil", aliasPattern: "olive\\s+oil", calories: 119, protein: 0, carbs: 0, fat: 14, gramsPerServing: 15 },
             { label: "cheese", aliasPattern: "cheese", calories: 113, protein: 7, carbs: 1, fat: 9, gramsPerServing: 28 }
         ];
+
+        const foodProfiles = [...carbsAndCalsSampleProfiles, ...builtInFoodProfiles]
+            .map((profile, index) => ({
+                ...profile,
+                source: profile.source || "Calories Zone preview",
+                sourcePriority: profile.sourcePriority || 0,
+                sourceOrder: index
+            }))
+            .sort((a, b) => {
+                if (b.sourcePriority !== a.sourcePriority) {
+                    return b.sourcePriority - a.sourcePriority;
+                }
+
+                if (b.label.length !== a.label.length) {
+                    return b.label.length - a.label.length;
+                }
+
+                return a.sourceOrder - b.sourceOrder;
+            });
+
+        function sampleFood(label, gramsPerServing, calories, protein, carbs, fat, aliases = []) {
+            return {
+                label,
+                aliasPattern: buildAliasPattern(label, aliases),
+                calories,
+                protein,
+                carbs,
+                fat,
+                gramsPerServing,
+                source: "Carbs & Cals sample PDF",
+                sourcePriority: 10
+            };
+        }
+
+        function buildAliasPattern(label, aliases) {
+            const phrases = [label, ...aliases]
+                .map(normalizeFoodPhrase)
+                .filter(Boolean);
+            const uniquePhrases = [...new Set(phrases)];
+            return uniquePhrases.map((phrase) => escapeRegex(phrase).replace(/\s+/g, "\\s+")).join("|");
+        }
+
+        function normalizeFoodPhrase(value) {
+            return String(value)
+                .toLowerCase()
+                .replace(/[()]/g, " ")
+                .replace(/&/g, " and ")
+                .replace(/\s+/g, " ")
+                .trim();
+        }
+
+        function escapeRegex(value) {
+            return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        }
 
         const guideLowScoreThreshold = 70;
         const obesityBmiThreshold = 30;
@@ -1688,13 +1904,23 @@
             let carbs = 0;
             let fat = 0;
             const matchedFoods = [];
+            const matchedSources = [];
+            const profileMatches = [];
 
             foodProfiles.forEach((profile) => {
-                const servings = findServings(normalizedMeal, profile);
-                if (servings <= 0) {
+                const match = findProfileMatch(normalizedMeal, profile);
+                if (!match || match.servings <= 0) {
                     return;
                 }
 
+                if (profileMatches.some((existingMatch) => rangesOverlap(existingMatch, match))) {
+                    return;
+                }
+
+                profileMatches.push({ ...match, profile });
+            });
+
+            profileMatches.forEach(({ profile, servings }) => {
                 calories += profile.calories * servings;
                 protein += profile.protein * servings;
                 carbs += profile.carbs * servings;
@@ -1704,6 +1930,10 @@
                     matchedFoods.push(profile.label);
                 } else {
                     matchedFoods.push(`${formatServings(servings)} x ${profile.label}`);
+                }
+
+                if (profile.source && !matchedSources.includes(profile.source)) {
+                    matchedSources.push(profile.source);
                 }
             });
 
@@ -1716,14 +1946,20 @@
                 proteinGrams: Math.max(0, Math.round(protein)),
                 carbsGrams: Math.max(0, Math.round(carbs)),
                 fatGrams: Math.max(0, Math.round(fat)),
-                matchedFoods
+                matchedFoods,
+                matchedSources
             };
         }
 
         function findServings(mealText, profile) {
+            return findProfileMatch(mealText, profile)?.servings || 0;
+        }
+
+        function findProfileMatch(mealText, profile) {
             const aliasRegex = new RegExp(`\\b(?:${profile.aliasPattern})\\b`, "i");
-            if (!aliasRegex.test(mealText)) {
-                return 0;
+            const aliasMatch = mealText.match(aliasRegex);
+            if (!aliasMatch) {
+                return null;
             }
 
             if (profile.gramsPerServing) {
@@ -1739,7 +1975,11 @@
                     const gramsValue = toGrams(amountValue, unitLabel);
 
                     if (Number.isFinite(gramsValue) && gramsValue > 0) {
-                        return clamp(gramsValue / profile.gramsPerServing, 0.25, 20);
+                        return {
+                            servings: clamp(gramsValue / profile.gramsPerServing, 0.25, 20),
+                            start: metricMatch.index,
+                            end: metricMatch.index + metricMatch[0].length
+                        };
                     }
                 }
             }
@@ -1752,7 +1992,11 @@
             if (prefixMatch) {
                 const count = Number(prefixMatch[1]);
                 if (Number.isFinite(count) && count > 0) {
-                    return clamp(count, 0.25, 20);
+                    return {
+                        servings: clamp(count, 0.25, 20),
+                        start: prefixMatch.index,
+                        end: prefixMatch.index + prefixMatch[0].length
+                    };
                 }
             }
 
@@ -1764,11 +2008,23 @@
             if (postfixMatch) {
                 const count = Number(postfixMatch[1]);
                 if (Number.isFinite(count) && count > 0) {
-                    return clamp(count, 0.25, 20);
+                    return {
+                        servings: clamp(count, 0.25, 20),
+                        start: postfixMatch.index,
+                        end: postfixMatch.index + postfixMatch[0].length
+                    };
                 }
             }
 
-            return 1;
+            return {
+                servings: 1,
+                start: aliasMatch.index,
+                end: aliasMatch.index + aliasMatch[0].length
+            };
+        }
+
+        function rangesOverlap(left, right) {
+            return left.start < right.end && right.start < left.end;
         }
 
         function toGrams(value, unit) {
