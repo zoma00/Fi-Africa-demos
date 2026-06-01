@@ -77,6 +77,13 @@
       gap: 14px;
     }
 
+    .resources {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
     .demo {
       display: grid;
       min-height: 230px;
@@ -91,8 +98,27 @@
       transition: border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
     }
 
+    .resource {
+      min-height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      color: var(--ink);
+      text-decoration: none;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 12px 28px rgba(2, 8, 12, 0.16);
+      font-weight: 800;
+    }
+
     .demo:focus-visible,
-    .demo:hover {
+    .demo:hover,
+    .resource:focus-visible,
+    .resource:hover {
       border-color: var(--accent);
       box-shadow: 0 14px 34px rgba(24, 33, 47, 0.10);
       transform: translateY(-2px);
@@ -134,6 +160,12 @@
       white-space: nowrap;
     }
 
+    .resource .tag {
+      background: #fff7ed;
+      border-color: #fed7aa;
+      color: var(--warm);
+    }
+
     footer {
       margin-top: 18px;
       color: var(--muted);
@@ -153,6 +185,10 @@
       }
 
       .demos {
+        grid-template-columns: 1fr;
+      }
+
+      .resources {
         grid-template-columns: 1fr;
       }
 
@@ -191,6 +227,21 @@
           <span class="tag">Health app</span>
           <span>Open</span>
         </span>
+      </a>
+    </section>
+
+    <section class="resources" aria-label="Presentation and contact links">
+      <a class="resource" href="./presentations/product_similarity_conversation_deck.pdf">
+        <span>Product Similarity deck</span>
+        <span class="tag">PDF</span>
+      </a>
+      <a class="resource" href="./presentations/calories_zone_conversation_deck.pdf">
+        <span>Calories Zone deck</span>
+        <span class="tag">PDF</span>
+      </a>
+      <a class="resource" href="./contact/business_card.png">
+        <span>Contact card</span>
+        <span class="tag">PNG</span>
       </a>
     </section>
 
