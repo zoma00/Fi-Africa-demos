@@ -8,10 +8,10 @@
     <style>
         :root {
             color-scheme: light;
-            --bg: #f7f4ed;
-            --surface: #fffaf2;
-            --card: #ffffff;
-            --line: #ddd4c6;
+            --bg: #d8f1ff;
+            --surface: #eef9ff;
+            --card: #f7fcff;
+            --line: #b9dceb;
             --text: #1f1d19;
             --muted: #635f57;
             --primary: #0f766e;
@@ -28,7 +28,7 @@
         body {
             margin: 0;
             font-family: "Segoe UI", system-ui, sans-serif;
-            background: radial-gradient(circle at top left, #fffefb 0%, var(--bg) 65%);
+            background: radial-gradient(circle at top left, #f1fbff 0%, var(--bg) 62%, #c7e8f8 100%);
             color: var(--text);
         }
 
@@ -52,7 +52,7 @@
         }
 
         .hero-inner {
-            background: linear-gradient(135deg, #fff8ed 0%, #ffe6c7 58%, #fffdf8 100%);
+            background: linear-gradient(135deg, #e7f7ff 0%, #bfe8fb 58%, #f4fbff 100%);
             padding: 26px;
         }
 
@@ -73,8 +73,8 @@
             margin-top: 14px;
             padding: 12px 14px;
             border-radius: 14px;
-            background: rgba(255, 255, 255, 0.86);
-            border: 1px solid #e8c798;
+            background: rgba(239, 250, 255, 0.9);
+            border: 1px solid #9ed3e8;
             color: #33281a;
             font-size: 0.95rem;
         }
@@ -701,6 +701,7 @@
         };
 
         const maxChatMessages = 30;
+        const macroRuleVersion = 2;
         const defaultChatGreeting = "I am your local wellness assistant. I can help with meal tracking, target progress, and general nutrition habits. I cannot provide medical advice.";
         const nonMedicalBoundaryMessage = "I can only provide general wellness guidance for meal tracking and nutrition habits. Calories Zone is not a medical device and does not diagnose, treat, cure, or prevent medical conditions. For medical questions, please consult a qualified healthcare professional.";
         const fallbackChatResponse = "I can help with meal logging, calorie targets, and simple daily nutrition habits. Ask about meal ideas, target progress, or macro planning.";
@@ -737,7 +738,7 @@
         };
 
         const goals = {
-            LoseFat: { label: "Lose fat", calorieMultiplier: 0.85, proteinMultiplier: 2.0 },
+            LoseFat: { label: "Lose fat", calorieMultiplier: 0.85, proteinMultiplier: 1.0 },
             Maintain: { label: "Maintain", calorieMultiplier: 1.0, proteinMultiplier: 1.8 },
             BuildMuscle: { label: "Build muscle", calorieMultiplier: 1.1, proteinMultiplier: 2.2 }
         };
@@ -768,7 +769,8 @@
         const obesityBmiThreshold = 30;
         const lowCalorieLoseFatTarget = 1200;
         const loseFatMaxProteinCalorieShare = 0.4;
-        const loseFatMaxFatCalorieShare = 0.35;
+        const loseFatMaxFatCalorieShare = 0.4;
+        const loseFatFatMultiplier = 0.5;
         const satietyFoodTerms = ["egg", "chicken", "salmon", "beef", "steak", "tuna", "beans", "oats", "oatmeal", "potato", "apple", "banana", "yogurt", "yoghurt", "milk"];
         const slowCarbTerms = ["oats", "oatmeal", "beans", "potato", "apple", "banana", "brown rice"];
         const fastCarbTerms = ["bread", "toast", "white rice", "soda", "juice", "candy", "cake", "cookie", "donut"];
@@ -826,6 +828,7 @@
         }
 
         hydrateProfile();
+        refreshCurrentPlanForMacroRule();
         renderMeals();
         renderPlan(currentPlan);
         renderChatMessages();
@@ -938,6 +941,22 @@
             elements.goal.value = storedProfile.goal || "Maintain";
         }
 
+        function refreshCurrentPlanForMacroRule() {
+            if (!currentPlan || currentPlan.macroRuleVersion === macroRuleVersion) {
+                return;
+            }
+
+            const input = getProfileInput();
+            if (!input) {
+                currentPlan = null;
+                localStorage.removeItem(storageKeys.plan);
+                return;
+            }
+
+            currentPlan = createPlan(input);
+            localStorage.setItem(storageKeys.plan, JSON.stringify(currentPlan));
+        }
+
         function getProfileInput() {
             const age = Number(elements.age.value);
             const heightCm = Number(elements.heightCm.value);
@@ -977,6 +996,7 @@
             return {
                 bmi,
                 bmr: Math.round(bmrRaw),
+                macroRuleVersion,
                 maintenanceCalories,
                 targetCalories,
                 proteinGrams,
@@ -1010,16 +1030,15 @@
         }
 
         function calculateFatGrams(input, targetCalories) {
+            if (input.goal === "LoseFat") {
+                const weightBasedFatGrams = input.weightKg * loseFatFatMultiplier;
+                const calorieCappedFat = targetCalories * loseFatMaxFatCalorieShare / 9;
+                return Math.max(0, Math.round(Math.min(weightBasedFatGrams, calorieCappedFat)));
+            }
+
             const recommendedFatGrams = targetCalories * 0.25 / 9;
             const minimumFatGrams = input.weightKg * 0.8;
-            const goalFatGrams = input.goal === "LoseFat" && targetCalories <= lowCalorieLoseFatTarget
-                ? recommendedFatGrams
-                : Math.max(minimumFatGrams, recommendedFatGrams);
-            const calorieCappedFat = input.goal === "LoseFat"
-                ? targetCalories * loseFatMaxFatCalorieShare / 9
-                : goalFatGrams;
-
-            return Math.max(0, Math.round(Math.min(goalFatGrams, calorieCappedFat)));
+            return Math.max(0, Math.round(Math.max(minimumFatGrams, recommendedFatGrams)));
         }
 
         function buildGuidanceNotes(input, plan) {
