@@ -377,6 +377,14 @@
             font-weight: 700;
         }
 
+        .meal-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
         .pill {
             display: inline-block;
             padding: 6px 10px;
@@ -639,6 +647,17 @@
                             <option value="g" selected>Grams (g)</option>
                             <option value="ml">Milliliters (ml)</option>
                             <option value="lb">Pounds (lb)</option>
+                        </select>
+                    </div>
+                    <div class="meal-unit-field">
+                        <label for="mealClassification">Meal classification</label>
+                        <select id="mealClassification">
+                            <option value="beforeBreakfast">Before breakfast</option>
+                            <option value="breakfast" selected>Breakfast</option>
+                            <option value="beforeLunch">Before lunch</option>
+                            <option value="lunch">Lunch</option>
+                            <option value="beforeDinner">Before dinner</option>
+                            <option value="dinner">Dinner</option>
                         </select>
                     </div>
                 </div>
@@ -929,7 +948,7 @@
             sampleFood("tomato" , 123, 22, 1, 5, 0),
             sampleFood("mango", 200, 150, 1, 35, 0),
             sampleFood("avocado", 150, 240, 3, 12, 22),
-            sampleFood("burger sandwitch", 200, 500, 25, 50, 20["beef burger sandwitch", "chicken burger sandwitch", "veggie burger sandwitch"]),
+            sampleFood("burger sandwitch", 200, 500, 25, 50, 20, ["beef burger sandwitch", "chicken burger sandwitch", "veggie burger sandwitch", "burger sandwich", "beef burger sandwich", "chicken burger sandwich", "veggie burger sandwich"]),
             sampleFood("ketchup", 15, 20, 0, 5, 0),
             sampleFood("cheese cake", 100, 294, 4, 35, 16, ["cheesecake"]),
             sampleFood("fruit cake", 100, 330, 3, 45, 10, ["fruitcake"]),
@@ -1089,6 +1108,14 @@
         const fastCarbTerms = ["bread", "toast", "white rice", "soda", "juice", "candy", "cake", "cookie", "donut"];
         const wholeFoodTerms = ["egg", "chicken", "rice", "oats", "oatmeal", "banana", "apple", "beans", "milk", "yogurt", "yoghurt", "salmon", "beef", "steak", "potato", "tuna", "olive oil"];
         const processedFoodTerms = ["soda", "chips", "candy", "cookie", "cake", "donut", "ice cream", "pizza", "burger", "fries", "fast food", "packaged", "snack", "sausage", "hot dog", "fried"];
+        const mealClassifications = {
+            beforeBreakfast: "Before breakfast",
+            breakfast: "Breakfast",
+            beforeLunch: "Before lunch",
+            lunch: "Lunch",
+            beforeDinner: "Before dinner",
+            dinner: "Dinner"
+        };
 
         const elements = {
             profileName: document.getElementById("profileName"),
@@ -1104,6 +1131,7 @@
             mealName: document.getElementById("mealName"),
             mealAmount: document.getElementById("mealAmount"),
             mealUnit: document.getElementById("mealUnit"),
+            mealClassification: document.getElementById("mealClassification"),
             estimatedCaloriesValue: document.getElementById("estimatedCaloriesValue"),
             estimatedProteinValue: document.getElementById("estimatedProteinValue"),
             estimatedCarbsValue: document.getElementById("estimatedCarbsValue"),
@@ -1198,6 +1226,7 @@
             const name = elements.mealName.value.trim();
             const amount = parseDecimal(elements.mealAmount.value);
             const unit = elements.mealUnit.value;
+            const classification = normalizeMealClassification(elements.mealClassification.value);
 
             if (!name || amount === null || amount <= 0) {
                 showMessage(elements.mealMessage, "Enter a meal name and meal entry amount before logging the meal.", true);
@@ -1218,6 +1247,8 @@
                 proteinGrams: estimate.proteinGrams,
                 carbsGrams: estimate.carbsGrams,
                 fatGrams: estimate.fatGrams,
+                classification,
+                classificationLabel: mealClassificationLabel(classification),
                 loggedAtLabel: new Date().toLocaleString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }),
                 matchedFoods: estimate.matchedFoods
             });
@@ -1226,6 +1257,7 @@
             renderMeals();
             elements.mealName.value = "";
             elements.mealAmount.value = "";
+            elements.mealClassification.value = classification;
             updateMealEstimatePreview();
             showMessage(elements.mealMessage, "Meal logged in browser storage.", false);
         });
@@ -1441,6 +1473,7 @@
                 elements.mealList.appendChild(empty);
             } else {
                 meals.slice(0, 8).forEach((meal) => {
+                    const classification = normalizeMealClassification(meal.classification);
                     const item = document.createElement("article");
                     item.className = "meal-item";
 	                    item.innerHTML = `
@@ -1448,6 +1481,9 @@
 	                            <span>${meal.name}</span>
 	                            <span>${meal.loggedAtLabel}</span>
 	                        </div>
+                            <div class="meal-meta">
+                                <span class="pill">${mealClassificationLabel(classification)}</span>
+                            </div>
 	                        <div>${meal.calories} kcal • P ${meal.proteinGrams}g • C ${meal.carbsGrams}g • F ${meal.fatGrams}g</div>
 	                    `;
 
@@ -1988,6 +2024,16 @@
 
         function buildEstimatorInput(name, amount, unit) {
             return `${formatAmount(amount)} ${unit} ${name}`;
+        }
+
+        function normalizeMealClassification(value) {
+            return Object.prototype.hasOwnProperty.call(mealClassifications, value)
+                ? value
+                : "breakfast";
+        }
+
+        function mealClassificationLabel(value) {
+            return mealClassifications[normalizeMealClassification(value)];
         }
 
         function estimateMealNutrition(mealText) {
