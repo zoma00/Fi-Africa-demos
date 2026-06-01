@@ -1899,6 +1899,10 @@
                 return "Hydration baseline: aim for steady water intake through the day and add extra around training or very hot weather.";
             }
 
+            if (containsAny(normalized, ["habit", "habits", "routine", "routines", "consistency", "consistent", "good habits"])) {
+                return habitsReply(context);
+            }
+
             if (containsAny(normalized, ["data", "privacy", "store", "offline", "local"])) {
                 return "Your profile, meals, and chat stay local on this device in this version.";
             }
@@ -1986,6 +1990,14 @@
             }
 
             return "Try a higher-energy plate: rice or potatoes, salmon or beef, vegetables, and milk or yogurt.";
+        }
+
+        function habitsReply(context) {
+            const targetLine = context.targetCalories === null
+                ? "Generate a plan when you want calorie-specific feedback."
+                : `Use your ${context.targetCalories} kcal target as a daily guide, not a reason to chase perfection.`;
+
+            return `${targetLine} Good habits: log meals soon after eating, build each main meal around protein and vegetables, drink water through the day, walk after meals when possible, keep sleep consistent, and review weekly trends instead of judging one day.`;
         }
 
         function generalReply(context) {
