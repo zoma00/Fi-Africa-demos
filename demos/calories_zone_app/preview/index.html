@@ -369,6 +369,11 @@
             width: 140px;
         }
 
+        .chat-button-stack {
+            display: grid;
+            gap: 8px;
+        }
+
         .meal-top {
             display: flex;
             justify-content: space-between;
@@ -623,7 +628,10 @@
                 <div id="chatList" class="chat-list"></div>
                 <div class="chat-actions">
                     <textarea id="chatInput" rows="3" placeholder="Ask about meals, calories, macros, hydration, or consistency habits"></textarea>
-                    <button id="sendChatButton" type="button">Send</button>
+                    <div class="chat-button-stack">
+                        <button id="sendChatButton" type="button">Send</button>
+                        <button id="clearChatButton" class="secondary" type="button">Clear chat</button>
+                    </div>
                 </div>
                 <div id="chatMessage" class="message"></div>
             </section>
@@ -1152,6 +1160,7 @@
             chatList: document.getElementById("chatList"),
             chatInput: document.getElementById("chatInput"),
             sendChatButton: document.getElementById("sendChatButton"),
+            clearChatButton: document.getElementById("clearChatButton"),
             chatMessage: document.getElementById("chatMessage")
         };
 
@@ -1263,6 +1272,7 @@
         });
 
         elements.sendChatButton.addEventListener("click", sendChatMessage);
+        elements.clearChatButton.addEventListener("click", clearChatHistory);
 
         elements.chatInput.addEventListener("keydown", (event) => {
             if (event.key === "Enter" && !event.shiftKey) {
@@ -1823,6 +1833,14 @@
             } else {
                 clearMessage(elements.chatMessage);
             }
+        }
+
+        function clearChatHistory() {
+            chatMessages = [createChatMessage("Assistant", defaultChatGreeting)];
+            persistChatMessages();
+            renderChatMessages();
+            elements.chatInput.value = "";
+            showMessage(elements.chatMessage, "Previous chat cleared from browser storage.", false);
         }
 
         function buildChatReply(userMessage) {
