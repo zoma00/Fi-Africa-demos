@@ -1872,6 +1872,10 @@
         function completeChatPrompt(userMessage, context) {
             const normalized = userMessage.toLowerCase();
 
+            if (isMealCountQuestion(normalized)) {
+                return mealCountReply(context);
+            }
+
             if (containsAny(normalized, ["remaining", "left", "over", "target", "today"])) {
                 return calorieStatusReply(context);
             }
@@ -1941,6 +1945,24 @@
             return `You have logged ${context.mealTotals.calories} kcal and your target is ${context.targetCalories} kcal. You are ${Math.abs(delta)} kcal over target today.`;
         }
 
+        function isMealCountQuestion(normalized) {
+            return containsAny(normalized, ["how many", "count", "number of"])
+                && containsAny(normalized, ["meal", "meals", "breakfast", "lunch", "dinner", "snack", "taken", "ate", "logged"]);
+        }
+
+        function mealCountReply(context) {
+            if (context.mealCount === 0) {
+                return "You have not logged any meals today yet.";
+            }
+
+            const mealWord = context.mealCount === 1 ? "meal" : "meals";
+            const classificationSummary = context.mealClassificationSummary
+                ? ` Breakdown: ${context.mealClassificationSummary}.`
+                : "";
+
+            return `You have logged ${context.mealCount} ${mealWord} today: ${context.mealNames.join(", ")}.${classificationSummary} Total so far: ${context.mealTotals.calories} kcal • P ${context.mealTotals.proteinGrams}g • C ${context.mealTotals.carbsGrams}g • F ${context.mealTotals.fatGrams}g.`;
+        }
+
         function macroReply(context) {
             let goalLine = "";
             if (context.goal === "LoseFat") {
@@ -1981,12 +2003,23 @@
                 carbsGrams: acc.carbsGrams + meal.carbsGrams,
                 fatGrams: acc.fatGrams + meal.fatGrams
             }), { calories: 0, proteinGrams: 0, carbsGrams: 0, fatGrams: 0 });
+            const classificationCounts = meals.reduce((acc, meal) => {
+                const label = mealClassificationLabel(meal.classification);
+                acc[label] = (acc[label] || 0) + 1;
+                return acc;
+            }, {});
+            const mealClassificationSummary = Object.entries(classificationCounts)
+                .map(([label, count]) => `${label}: ${count}`)
+                .join(", ");
 
             return {
                 profileName: elements.profileName.value.trim() || "My profile",
                 goal: elements.goal.value,
                 targetCalories: currentPlan ? currentPlan.targetCalories : null,
-                mealTotals
+                mealTotals,
+                mealCount: meals.length,
+                mealNames: meals.map((meal) => meal.name),
+                mealClassificationSummary
             };
         }
 
