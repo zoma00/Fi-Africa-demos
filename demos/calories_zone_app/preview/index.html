@@ -924,7 +924,31 @@
             sampleFood("peanut butter", 16, 94, 4, 3, 8, ["peanut butter"]),
             sampleFood("feta cheese", 28, 75, 4, 1, 6, ["feta"]),
             sampleFood("cheese", 28, 113, 7, 1, 9, ["cheese"]),
-            sampleFood("chedder cheese", 28, 104, 6, 0, 9, ["cheddar cheese", "cheddar"])
+            sampleFood("chedder cheese", 28, 104, 6, 0, 9, ["cheddar cheese", "cheddar"]),
+            sampleFood("onion", 110, 44, 1, 10, 0), 
+            sampleFood("tomato" , 123, 22, 1, 5, 0),
+            sampleFood("mango", 200, 150, 1, 35, 0),
+            sampleFood("avocado", 150, 240, 3, 12, 22),
+            sampleFood("burger sandwitch", 200, 500, 25, 50, 20["beef burger sandwitch", "chicken burger sandwitch", "veggie burger sandwitch"]),
+            sampleFood("ketchup", 15, 20, 0, 5, 0),
+            sampleFood("cheese cake", 100, 294, 4, 35, 16, ["cheesecake"]),
+            sampleFood("fruit cake", 100, 330, 3, 45, 10, ["fruitcake"]),
+            sampleFood("chocolate cake", 100, 350, 4, 40, 15, ["chocolate cake"]),
+            sampleFood("carrot", 61, 25, 1, 6, 0),
+            sampleFood("cucumber", 52, 8, 0, 2, 0),
+            sampleFood("broccoli", 91, 31, 3, 6, 0),
+            sampleFood("spinach", 30, 7, 1, 1, 0, ["spinach"]),
+            sampleFood("lettuce", 36, 5, 0, 1, 0),
+            sampleFood("zucchini", 124, 20, 2, 4, 0),
+            sampleFood("carrot cake", 100, 350, 4, 40, 15, ["carrot cake"]),
+            sampleFood("blueberry muffin", 100, 400, 5, 50, 15, ["blueberry muffin"]),
+            sampleFood("banana muffin", 100, 380, 4, 45, 12, ["banana muffin"]),
+            sampleFood("apple pie", 100, 320, 3, 40, 10, ["apple pie"]),
+            sampleFood("pumpkin pie", 100, 350, 4, 45, 15, ["pumpkin pie"]),
+            sampleFood("pancakes with syrup", 150, 350, 6, 50, 10, ["pancakes", "pancakes with syrup"]),
+            sampleFood("waffles with syrup", 150, 400, 6, 60, 15, ["waffles", "waffles with syrup"]),
+            sampleFood("pizza slice", 100, 285, 12, 36, 10, ["pizza"]),
+            sampleFood("pasta", 100, 131, 5, 25, 1, ["pasta cooked", "cooked pasta"])
         ];
 
         const builtInFoodProfiles = [
@@ -944,7 +968,16 @@
             { label: "tuna", aliasPattern: "tuna", calories: 132, protein: 29, carbs: 0, fat: 1, gramsPerServing: 100 },
             { label: "peanut butter", aliasPattern: "peanut\\s+butter", calories: 94, protein: 4, carbs: 3, fat: 8, gramsPerServing: 16 },
             { label: "olive oil", aliasPattern: "olive\\s+oil", calories: 119, protein: 0, carbs: 0, fat: 14, gramsPerServing: 15 },
-            { label: "cheese", aliasPattern: "cheese", calories: 113, protein: 7, carbs: 1, fat: 9, gramsPerServing: 28 }
+            { label: "cheese", aliasPattern: "cheese", calories: 113, protein: 7, carbs: 1, fat: 9, gramsPerServing: 28 },
+            { label: "cheddar cheese", aliasPattern: "cheddar(?:\\s+cheese)?", calories: 104, protein: 6, carbs: 0, fat: 9, gramsPerServing: 28 },
+            { label: "feta cheese", aliasPattern: "feta(?:\\s+cheese)?", calories: 75, protein: 4, carbs: 1, fat: 6, gramsPerServing: 28 },
+            { label: "onion", aliasPattern: "onions?", calories: 44, protein: 1, carbs: 10, fat: 0, gramsPerServing: 110 },
+            { label: "tomato", aliasPattern: "tomatoes?|tomato", calories: 22, protein: 1, carbs: 5, fat: 0, gramsPerServing: 123 },
+            { label: "mango", aliasPattern: "mangoes?|mango", calories: 150, protein: 1, carbs: 35, fat: 0, gramsPerServing: 200 },
+            { label: "avocado", aliasPattern: "avocado", calories: 240, protein: 3, carbs: 12, fat: 22, gramsPerServing: 150 },
+            { label: "ketchup", aliasPattern: "ketchup|catsup", calories: 20, protein: 0, carbs: 5, fat: 0, gramsPerServing: 15 },
+            { label: "pizza", aliasPattern: "pizza", calories: 285, protein: 12, carbs: 36, fat: 10, gramsPerServing: 100 },
+            { label: "pasta", aliasPattern: "(?:cooked\\s+)?pasta", calories: 131, protein: 5, carbs: 25, fat: 1, gramsPerServing: 100 }
         ];
 
         const foodProfiles = [...carbsAndCalsSampleProfiles, ...builtInFoodProfiles]
