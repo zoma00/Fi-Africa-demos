@@ -908,7 +908,12 @@
             sampleFood("chicken korma", 225, 286, 33, 10, 11),
             sampleFood("king prawn bhuna", 175, 210, 15, 3, 15),
             sampleFood("chicken tandoori", 175, 375, 48, 4, 19),
-            sampleFood("lamb biryani", 225, 439, 16, 47, 21)
+            sampleFood("lamb biryani", 225, 439, 16, 47, 21),
+            sampleFood("chicken biryani", 225, 286, 33, 10, 11),
+            sampleFood("vegetable biryani", 225, 198, 5, 35, 7),
+            sampleFood("chicken tikka masala", 225, 325, 40, 8, 14),
+            sampleFood("cheese and onion samosa", 80, 166, 5, 18, 9, ["samosa cheese onion", "samosa cheese and onion"]),
+            sampleFood("vegetable samosa", 80, 142, 3, 18, 7, ["samosa vegetable"])
         ];
 
         const builtInFoodProfiles = [
@@ -965,11 +970,55 @@
         }
 
         function buildAliasPattern(label, aliases) {
-            const phrases = [label, ...aliases]
+            const phrases = [label, ...aliases, ...buildAutomaticAliases(label)]
                 .map(normalizeFoodPhrase)
                 .filter(Boolean);
             const uniquePhrases = [...new Set(phrases)];
             return uniquePhrases.map((phrase) => escapeRegex(phrase).replace(/\s+/g, "\\s+")).join("|");
+        }
+
+        function buildAutomaticAliases(label) {
+            const phrase = normalizeFoodPhrase(label);
+            if (!phrase) {
+                return [];
+            }
+
+            const aliases = [
+                phrase.replace(/\band\b/g, " "),
+                phrase.replace(/\s+/g, " ")
+            ];
+            const words = phrase.split(" ").filter(Boolean);
+            const lastWord = words[words.length - 1];
+            const leadFoodTerms = [
+                "bread",
+                "biscuit",
+                "burger",
+                "cake",
+                "cheese",
+                "chocolate",
+                "egg",
+                "juice",
+                "milk",
+                "omelette",
+                "potato",
+                "rice",
+                "salad",
+                "samosa",
+                "sandwich",
+                "sauce",
+                "sausage",
+                "soup",
+                "toast",
+                "yogurt"
+            ];
+
+            if (words.length > 1 && leadFoodTerms.includes(lastWord)) {
+                const modifiers = words.slice(0, -1).filter((word) => word !== "and");
+                aliases.push(`${lastWord} ${modifiers.join(" ")}`);
+                aliases.push(`${lastWord} ${words.slice(0, -1).join(" ")}`);
+            }
+
+            return aliases;
         }
 
         function normalizeFoodPhrase(value) {
