@@ -1,0 +1,62 @@
+[
+  {
+    "filename": "Coffee.jpg",
+    "article": "DEMO-COFFEE",
+    "name": "Ground Coffee",
+    "category": "Beverages"
+  },
+  {
+    "filename": "nescafee.jpg",
+    "article": "DEMO-NESCAFE",
+    "name": "Nescafe Classic",
+    "category": "Beverages"
+  },
+  {
+    "filename": "Green beans.jpg",
+    "article": "DEMO-GREEN-BEANS",
+    "name": "Green Beans",
+    "category": "Canned Food"
+  },
+  {
+    "filename": "canned tomatoes.png",
+    "article": "DEMO-TOMATOES",
+    "name": "Canned Tomatoes",
+    "category": "Canned Food"
+  },
+  {
+    "filename": "white-beans.png",
+    "article": "DEMO-WHITE-BEANS",
+    "name": "White Beans",
+    "category": "Canned Food"
+  },
+  {
+    "filename": "canned tuna.jpg",
+    "article": "DEMO-TUNA",
+    "name": "Canned Tuna",
+    "category": "Canned Food"
+  },
+  {
+    "filename": "MissionFoods6PlainWraps.jpg",
+    "article": "DEMO-WRAPS",
+    "name": "Plain Tortilla Wraps",
+    "category": "Bakery"
+  },
+  {
+    "filename": "Natural-Greek-Yogurt.jpg",
+    "article": "DEMO-YOGURT",
+    "name": "Natural Greek Yogurt",
+    "category": "Dairy"
+  },
+  {
+    "filename": "penne-pasta-in-box-E74J88.jpg",
+    "article": "DEMO-PASTA",
+    "name": "Penne Pasta",
+    "category": "Pantry"
+  },
+  {
+    "filename": "popcorn.jpg",
+    "article": "DEMO-POPCORN",
+    "name": "Popcorn",
+    "category": "Snacks"
+  }
+]
