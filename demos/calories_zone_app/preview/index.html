@@ -51,6 +51,58 @@
             overflow: hidden;
         }
 
+        .dropdown-section {
+            padding: 0;
+        }
+
+        .dropdown-section summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 18px;
+            cursor: pointer;
+            font-weight: 800;
+            list-style: none;
+        }
+
+        .dropdown-section summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .dropdown-section summary::after {
+            content: "+";
+            flex: 0 0 auto;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            color: var(--primary);
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+
+        .dropdown-section[open] summary::after {
+            content: "-";
+        }
+
+        .dropdown-title {
+            font-size: 1.45rem;
+            line-height: 1.2;
+        }
+
+        .hero-title {
+            font-size: clamp(1.8rem, 3vw, 2.8rem);
+            color: #18130d;
+        }
+
+        .dropdown-body {
+            padding: 0 18px 18px;
+        }
+
         .hero-inner {
             background: linear-gradient(135deg, #e7f7ff 0%, #bfe8fb 58%, #f4fbff 100%);
             padding: 26px;
@@ -247,6 +299,10 @@
             background: linear-gradient(135deg, var(--secondary-soft), #fff1de 100%);
         }
 
+        .guidance .dropdown-body {
+            padding-top: 0;
+        }
+
         .guidance ul {
             margin: 0;
             padding-left: 20px;
@@ -438,13 +494,13 @@
 </head>
 <body>
     <div class="page">
-        <section class="hero">
-            <div class="hero-inner">
-                <h1>Calories Zone Browser Preview</h1>
+        <details class="hero dropdown-section">
+            <summary><span class="dropdown-title hero-title">Calories Zone Browser Preview</span></summary>
+            <div class="hero-inner dropdown-body">
                 <p>This is a local preview of the Android app flow. It mirrors the calculator, saved profile, meal logging, and guidance notes so you can review the product quickly in a browser before shipping the Android build.</p>
                 <div class="banner">This is not the Android APK runtime. The actual installable Android artifact is still the APK or AAB built by Gradle.</div>
             </div>
-        </section>
+        </details>
 
         <div class="grid">
             <section class="card span-7">
@@ -537,11 +593,13 @@
                 </div>
             </section>
 
-            <section class="card span-12 guidance">
-                <h2>Local guidance</h2>
-                <p class="subtle">This preview uses the same rule-based guidance approach as the Android app. A future on-device helper should only help with meal text parsing or chat, not with the nutrition math.</p>
-                <ul id="guidanceList"></ul>
-            </section>
+            <details class="card span-12 guidance dropdown-section">
+                <summary><span class="dropdown-title">Local guidance</span></summary>
+                <div class="dropdown-body">
+                    <p class="subtle">This preview uses the same rule-based guidance approach as the Android app. A future on-device helper should only help with meal text parsing or chat, not with the nutrition math.</p>
+                    <ul id="guidanceList"></ul>
+                </div>
+            </details>
 
             <section class="card span-12">
                 <h2>Guide calculation: beyond calories</h2>
@@ -577,48 +635,56 @@
                     </div>
                 </div>
 
-                <h3 style="margin-top:18px;">Next guide actions</h3>
-                <ul id="guideNotesList"></ul>
+                <details class="dropdown-section" style="margin-top:18px;">
+                    <summary><span class="dropdown-title">Next guide actions</span></summary>
+                    <div class="dropdown-body">
+                        <ul id="guideNotesList"></ul>
+                    </div>
+                </details>
 
-                <h3 style="margin-top:18px;">Guide rules</h3>
-                <div class="method-grid">
-                    <article class="method-item">
-                        <h3>Macronutrient tracking</h3>
-                        <p>Watch protein, carbs, and fats so the same calories do not hide low protein or high sugar.</p>
-                    </article>
-                    <article class="method-item">
-                        <h3>Portion method</h3>
-                        <p>Use hand portions: palm for protein, fist for vegetables, cupped hand for carbs, and thumb for fats.</p>
-                    </article>
-                    <article class="method-item">
-                        <h3>Glycemic load</h3>
-                        <p>Prefer slower-digesting carbs like oats or beans when you want steadier energy and appetite control.</p>
-                    </article>
-                    <article class="method-item">
-                        <h3>Nutrient density</h3>
-                        <p>Choose foods that bring more vitamins, minerals, fiber, and protein for the calories.</p>
-                    </article>
-                    <article class="method-item">
-                        <h3>Satiety</h3>
-                        <p>Build meals around protein, fiber, and water-rich foods that help you stay full longer.</p>
-                    </article>
-                    <article class="method-item">
-                        <h3>Processing level</h3>
-                        <p>Limit sugary snacks, fast food, refined oils, and heavily packaged foods when possible.</p>
-                    </article>
-                    <article class="method-item">
-                        <h3>Meal timing</h3>
-                        <p>Keep meal times consistent and avoid making late-night eating your default routine.</p>
-                    </article>
-                    <article class="method-item">
-                        <h3>Behavior habits</h3>
-                        <p>Account for sleep, stress eating, emotional eating, and your food environment.</p>
-                    </article>
-                    <article class="method-item">
-                        <h3>Progress trends</h3>
-                        <p>Adjust using weekly weight, waist, hunger, energy, and training performance instead of one day.</p>
-                    </article>
-                </div>
+                <details class="dropdown-section" style="margin-top:18px;">
+                    <summary><span class="dropdown-title">Guide rules</span></summary>
+                    <div class="dropdown-body">
+                        <div class="method-grid">
+                            <article class="method-item">
+                                <h3>Macronutrient tracking</h3>
+                                <p>Watch protein, carbs, and fats so the same calories do not hide low protein or high sugar.</p>
+                            </article>
+                            <article class="method-item">
+                                <h3>Portion method</h3>
+                                <p>Use hand portions: palm for protein, fist for vegetables, cupped hand for carbs, and thumb for fats.</p>
+                            </article>
+                            <article class="method-item">
+                                <h3>Glycemic load</h3>
+                                <p>Prefer slower-digesting carbs like oats or beans when you want steadier energy and appetite control.</p>
+                            </article>
+                            <article class="method-item">
+                                <h3>Nutrient density</h3>
+                                <p>Choose foods that bring more vitamins, minerals, fiber, and protein for the calories.</p>
+                            </article>
+                            <article class="method-item">
+                                <h3>Satiety</h3>
+                                <p>Build meals around protein, fiber, and water-rich foods that help you stay full longer.</p>
+                            </article>
+                            <article class="method-item">
+                                <h3>Processing level</h3>
+                                <p>Limit sugary snacks, fast food, refined oils, and heavily packaged foods when possible.</p>
+                            </article>
+                            <article class="method-item">
+                                <h3>Meal timing</h3>
+                                <p>Keep meal times consistent and avoid making late-night eating your default routine.</p>
+                            </article>
+                            <article class="method-item">
+                                <h3>Behavior habits</h3>
+                                <p>Account for sleep, stress eating, emotional eating, and your food environment.</p>
+                            </article>
+                            <article class="method-item">
+                                <h3>Progress trends</h3>
+                                <p>Adjust using weekly weight, waist, hunger, energy, and training performance instead of one day.</p>
+                            </article>
+                        </div>
+                    </div>
+                </details>
             </section>
 
             <section class="card span-12">
@@ -670,25 +736,29 @@
                     </div>
                 </div>
 
-                <h3 style="margin-top:18px;">Auto calculated</h3>
-                <div class="stats">
-                    <div class="stat">
-                        <div class="stat-label">Calories</div>
-                        <div class="stat-value" id="estimatedCaloriesValue">-</div>
+                <details class="dropdown-section" style="margin-top:18px;">
+                    <summary><span class="dropdown-title">Auto calculated</span></summary>
+                    <div class="dropdown-body">
+                        <div class="stats">
+                            <div class="stat">
+                                <div class="stat-label">Calories</div>
+                                <div class="stat-value" id="estimatedCaloriesValue">-</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-label">Protein</div>
+                                <div class="stat-value" id="estimatedProteinValue">-</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-label">Carbs</div>
+                                <div class="stat-value" id="estimatedCarbsValue">-</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-label">Fat</div>
+                                <div class="stat-value" id="estimatedFatValue">-</div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="stat">
-                        <div class="stat-label">Protein</div>
-                        <div class="stat-value" id="estimatedProteinValue">-</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-label">Carbs</div>
-                        <div class="stat-value" id="estimatedCarbsValue">-</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-label">Fat</div>
-                        <div class="stat-value" id="estimatedFatValue">-</div>
-                    </div>
-                </div>
+                </details>
 
                 <div class="actions" style="margin-top:14px; grid-template-columns: 1fr;">
                     <button id="addMealButton" type="button">Log meal</button>
@@ -1999,6 +2069,7 @@
 
             return `${targetLine} Good habits: log meals soon after eating, build each main meal around protein and vegetables, drink water through the day, walk after meals when possible, keep sleep consistent, and review weekly trends instead of judging one day.`;
         }
+
 
         function generalReply(context) {
             const targetLine = context.targetCalories === null
