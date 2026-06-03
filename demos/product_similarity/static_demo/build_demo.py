@@ -114,7 +114,7 @@ def build_html(products: list[dict]) -> str:
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Product Similarity Demo</title>
+  <title>Catalog QA Product Similarity Demo</title>
   <style>
     :root {{
       color-scheme: light;
@@ -157,6 +157,25 @@ def build_html(products: list[dict]) -> str:
       grid-template-columns: repeat(4, minmax(130px, 1fr));
       gap: 12px;
       margin-bottom: 18px;
+    }}
+    .positioning {{
+      margin-bottom: 18px;
+      padding: 16px;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }}
+    .positioning strong {{
+      display: block;
+      margin-bottom: 6px;
+      color: var(--accent);
+      font-size: 14px;
+    }}
+    .positioning p {{
+      margin: 0;
+      max-width: 980px;
+      color: var(--ink);
+      line-height: 1.45;
     }}
     .stat, .panel, .product, .match {{
       background: var(--panel);
@@ -376,8 +395,8 @@ def build_html(products: list[dict]) -> str:
 <body>
   <header>
     <div>
-      <h1>Product Similarity Demo</h1>
-      <div class="subtitle">Offline browser preview using embedded product images and simulated similarity scores.</div>
+      <h1>Catalog QA Product Similarity Demo</h1>
+      <div class="subtitle">Sales preview for packaging similarity review, duplicate checks, variants, old packaging, and SKU/barcode image QA.</div>
     </div>
     <span class="pill">Single HTML file</span>
   </header>
@@ -389,6 +408,11 @@ def build_html(products: list[dict]) -> str:
       <div class="stat"><strong>Offline</strong><span>no database required</span></div>
     </section>
 
+    <section class="positioning" aria-label="Demo positioning">
+      <strong>Positioning</strong>
+      <p>This is not only a shopper-style visual search demo. It is positioned for catalog QA and packaging similarity review: helping teams find duplicate records, valid variants, old packaging, wrong images, and confusing SKU/barcode cases faster.</p>
+    </section>
+
     <section class="layout">
       <aside class="panel">
         <h2>Reference Product</h2>
@@ -398,7 +422,7 @@ def build_html(products: list[dict]) -> str:
         <input id="threshold" type="range" min="0" max="1" value="0" step="0.05">
         <button id="searchButton" type="button">Find Similar Products</button>
         <div class="reference" id="reference"></div>
-        <p class="notice">This demo does not call OpenAI CLIP or PostgreSQL. It mirrors the sales flow for quick browser viewing on a laptop or phone.</p>
+        <p class="notice">This static demo is a sales preview. It does not call OpenAI CLIP or PostgreSQL; a real pilot should use customer product images, real embeddings, and measurable review results.</p>
       </aside>
 
       <section>
@@ -415,13 +439,13 @@ def build_html(products: list[dict]) -> str:
 
     <section class="panel assistant-panel">
       <div class="toolbar">
-        <h2>Local Guidance Assistant</h2>
+        <h2>Guided Catalog QA Assistant</h2>
         <span class="pill">Browser only</span>
       </div>
-      <p class="assistant-intro">Ask how to use the demo, interpret scores, choose a threshold, review duplicates or variants, or add products through product_metadata.json.</p>
+      <p class="assistant-intro">Ask how this preview supports catalog QA, packaging comparison, duplicate review, variants, old packaging, SKU/barcode checks, or a customer pilot.</p>
       <div id="chatList" class="chat-list"></div>
       <div class="chat-actions">
-        <textarea id="chatInput" rows="3" placeholder="Ask about similarity scores, thresholds, duplicates, variants, barcodes, or adding products"></textarea>
+        <textarea id="chatInput" rows="3" placeholder="Ask about catalog QA, packaging similarity, thresholds, duplicates, variants, old packaging, or pilot fit"></textarea>
         <div class="chat-button-stack">
           <button id="sendChatButton" type="button">Send</button>
           <button id="clearChatButton" class="secondary-button" type="button">Clear chat</button>
@@ -434,7 +458,7 @@ def build_html(products: list[dict]) -> str:
     const products = {data};
     const storageKey = 'product_similarity_demo_chat_messages';
     const maxChatMessages = 24;
-    const defaultAssistantGreeting = 'I am your local product similarity guide. I can explain how to use this static demo, read scores, choose thresholds, and add products to product_metadata.json.';
+    const defaultAssistantGreeting = 'I am your guided catalog QA assistant. I can explain how this sales preview supports packaging similarity review, duplicate checks, variants, old packaging, SKU/barcode cases, and pilot planning.';
     const select = document.getElementById('productSelect');
     const reference = document.getElementById('reference');
     const matches = document.getElementById('matches');
@@ -547,7 +571,7 @@ def build_html(products: list[dict]) -> str:
       const context = selected ? `Current reference: ${{selected.name}} (${{selected.article}}). Current threshold: ${{thresholdText}}.` : '';
 
       if (matchesAny(text, ['start', 'use', 'how', 'workflow', 'steps'])) {{
-        return `${{context}}\n\nBasic workflow: choose a reference product, review the top matches, adjust the threshold, then decide whether each match is a duplicate, valid variant, old packaging version, or catalog mistake.`;
+        return `${{context}}\n\nBasic workflow: choose a reference product, review the top matches, adjust the threshold, then decide whether each match is a duplicate record, valid variant, old packaging version, wrong image, or catalog mistake.`;
       }}
       if (matchesAny(text, ['threshold', 'slider', 'filter', 'no result', 'no match'])) {{
         return `${{context}}\n\nUse the threshold slider to control strictness. Lower values show more possible matches for exploration. Higher values hide weaker matches when you only want close visual candidates. If no matches appear, lower the threshold.`;
@@ -568,9 +592,12 @@ def build_html(products: list[dict]) -> str:
         return 'To add products: put the image in static_demo/product_images, add a matching entry in product_metadata.json with filename, article, name, category, and optional barcode, then run python3 demos/product_similarity/static_demo/build_demo.py. The rebuilt index.html embeds the images for offline viewing.';
       }}
       if (matchesAny(text, ['clip', 'postgres', 'database', 'real', 'backend', 'pilot'])) {{
-        return 'This static demo is a browser preview. It does not call CLIP, PostgreSQL, or a backend. A real pilot should replace the simulated scores with embeddings, store metadata, and measure top-match quality and review-time savings.';
+        return 'This static demo is a sales preview of the workflow. It does not call CLIP, PostgreSQL, or a backend. A real pilot should use customer product images, real embeddings, metadata, and measured top-match quality and review-time savings.';
       }}
-      return `${{context}}\n\nI can help with the demo workflow, thresholds, score interpretation, duplicate checks, variants, old packaging, barcode/SKU meaning, and adding products through product_metadata.json.`;
+      if (matchesAny(text, ['position', 'positioning', 'different', 'shopper', 'ecommerce', 'visual search'])) {{
+        return 'The positioning is catalog QA and packaging similarity review, not only shopper visual search. The value is helping catalog, QA, packaging, and SKU teams review duplicate records, variants, old packaging, wrong images, and confusing barcode/SKU cases faster.';
+      }}
+      return `${{context}}\n\nI can help with catalog QA positioning, demo workflow, thresholds, score interpretation, duplicate checks, variants, old packaging, barcode/SKU meaning, and pilot planning.`;
     }}
 
     function matchesAny(text, terms) {{
