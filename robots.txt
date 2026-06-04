@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://zoma00.github.io/Fi-Africa-demos/sitemap.xml
